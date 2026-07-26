@@ -995,7 +995,7 @@ function LuxuryChatWidget() {
 function App() {
   return (
     <HelmetProvider>
-      <Router>
+      <Router basename={import.meta.env.BASE_URL}>
         <Header />
         <Routes>
           <Route path="/" element={<HomePage />} />
