@@ -3163,16 +3163,28 @@ button,
 }
 
 @media (max-width: 760px) {
+  html,
   body {
+    width: 100%;
+    max-width: 100%;
     overflow-x: hidden;
+  }
+
+  #root,
+  .leadership-page {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
   }
 
   .site-header {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 8px;
     width: 100%;
+    max-width: 100%;
     min-height: 58px;
     padding: 8px 10px;
+    overflow: hidden;
   }
 
   .brand {
@@ -3270,5 +3282,67 @@ button,
     min-height: 46px;
     display: flex;
     align-items: center;
+  }
+
+  .leadership-hero {
+    width: 100%;
+    max-width: 100%;
+    min-height: 330px;
+    padding: 82px 16px 34px;
+  }
+
+  .leadership-hero-content,
+  .leadership-hero-content h1,
+  .leadership-hero-content p {
+    max-width: 100%;
+  }
+
+  .leadership-stats,
+  .leadership-section,
+  .leadership-values,
+  .leadership-bottom-composition {
+    width: calc(100% - 32px);
+    max-width: calc(100% - 32px);
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .leadership-stats,
+  .executive-grid,
+  .values-grid,
+  .leadership-timeline,
+  .factory-process-grid,
+  .quality-grid,
+  .leadership-bottom-composition,
+  .leadership-philosophy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .leadership-stats {
+    margin-top: 14px;
+    padding: 0;
+  }
+
+  .leadership-stats article {
+    min-width: 0;
+    border-left: 0;
+    border-bottom: 1px solid rgba(221, 213, 199, 0.65);
+  }
+
+  .leadership-stats article:last-child {
+    border-bottom: 0;
+  }
+
+  .leadership-section-heading h2::before,
+  .leadership-section-heading h2::after {
+    display: none;
+  }
+
+  .leadership-bottom-composition {
+    gap: 22px;
+  }
+
+  .values-grid article {
+    grid-template-columns: 28px minmax(0, 1fr);
   }
 }
