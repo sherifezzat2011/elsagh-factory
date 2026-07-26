@@ -78,6 +78,9 @@ const pageMotion = {
   transition: { duration: 0.35 },
 }
 
+const routerBasename =
+  import.meta.env.BASE_URL === '/' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '')
+
 function SEOHead({ title, description }: { title: string; description: string }) {
   return (
     <Helmet>
@@ -1034,7 +1037,7 @@ function LuxuryChatWidget() {
 function App() {
   return (
     <HelmetProvider>
-      <Router basename={import.meta.env.BASE_URL}>
+      <Router basename={routerBasename}>
         <Header />
         <Routes>
           <Route path="/" element={<HomePage />} />
