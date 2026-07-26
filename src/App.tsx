@@ -215,6 +215,17 @@ function Header() {
   )
 }
 
+function RouteScrollReset() {
+  const location = useLocation()
+
+  useEffect(() => {
+    document.documentElement.scrollLeft = 0
+    document.body.scrollLeft = 0
+  }, [location.pathname])
+
+  return null
+}
+
 function SearchOverlay({ onClose }: { onClose: () => void }) {
   const [term, setTerm] = useState('')
   const addSearch = useStore((state) => state.addSearch)
@@ -1038,6 +1049,7 @@ function App() {
   return (
     <HelmetProvider>
       <Router basename={routerBasename}>
+        <RouteScrollReset />
         <Header />
         <Routes>
           <Route path="/" element={<HomePage />} />
