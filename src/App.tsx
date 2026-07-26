@@ -113,6 +113,13 @@ function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
   const { cart, wishlist } = useStore()
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
+
   return (
     <>
       <header className="site-header">
@@ -154,16 +161,48 @@ function Header() {
       </header>
       <AnimatePresence>
         {menuOpen ? (
-          <motion.div className="drawer-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.aside className="mobile-menu" initial={{ x: 320 }} animate={{ x: 0 }} exit={{ x: 320 }}>
-              <button aria-label="إغلاق القائمة" className="icon-button" onClick={() => setMenuOpen(false)}>
-                <X />
-              </button>
-              {navItems.map(([href, label]) => (
-                <NavLink key={href} to={href} onClick={() => setMenuOpen(false)}>
-                  {label}
-                </NavLink>
-              ))}
+          <motion.div
+            className="drawer-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setMenuOpen(false)}
+          >
+            <motion.aside
+              className="mobile-menu"
+              initial={{ x: 320 }}
+              animate={{ x: 0 }}
+              exit={{ x: 320 }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="mobile-menu-head">
+                <span>
+                  <strong>مصنع الصايغ</strong>
+                  <small>Alsayegh Factory</small>
+                </span>
+                <button aria-label="إغلاق القائمة" className="icon-button" onClick={() => setMenuOpen(false)}>
+                  <X />
+                </button>
+              </div>
+              <div className="mobile-menu-shortcuts">
+                <Link to="/wishlist" onClick={() => setMenuOpen(false)}>
+                  <Heart size={18} />
+                  المفضلة
+                  <b>{wishlist.length}</b>
+                </Link>
+                <Link to="/cart" onClick={() => setMenuOpen(false)}>
+                  <ShoppingBag size={18} />
+                  السلة
+                  <b>{cart.length}</b>
+                </Link>
+              </div>
+              <nav aria-label="قائمة الهاتف">
+                {navItems.map(([href, label]) => (
+                  <NavLink key={href} to={href} onClick={() => setMenuOpen(false)}>
+                    {label}
+                  </NavLink>
+                ))}
+              </nav>
             </motion.aside>
           </motion.div>
         ) : null}
