@@ -95,22 +95,55 @@ export const asset = {
 }
 
 export const categories: Category[] = [
-  ['sets', 'sets', 'الأطقم', 'أطقم ذهب عيار 21 متناسقة للمناسبات والعرائس.', 'set', 'other'],
-  ['necklaces', 'necklaces', 'القلائد', 'قلائد بحرينية بتفاصيل دقيقة ووزن واضح.', 'necklace', 'necklace'],
-  ['bracelets', 'bracelets', 'الأساور', 'أساور يومية وفاخرة بنقوش خليجية.', 'bracelet', 'bracelet'],
-  ['rings', 'rings', 'الخواتم', 'خواتم ذهب بتصاميم كلاسيكية وحديثة.', 'ring', 'ring'],
-  ['earrings', 'earrings', 'الأقراط', 'أقراط خفيفة وقطع بارزة للمناسبات.', 'earrings', 'earrings'],
-  ['bangles', 'bangles', 'التراكي', 'تراكي ودبل بنقش عربي فاخر.', 'bangle', 'bangle'],
-  ['mazanat', 'mazanat', 'المزانط', 'قطع تراثية مستوحاة من صياغة الخليج.', 'other', 'other'],
-  ['wedding', 'wedding', 'الدبل', 'دبل ذهب عيار 21 بتشطيب ناعم.', 'ring', 'ring'],
-].map(([id, slug, name, description, imageKey, pieceType]) => ({
-  id,
-  slug,
-  name,
-  description,
-  image: `https://images.unsplash.com/photo-${imageKey === 'ring' ? '1605100804763' : imageKey === 'necklace' ? '1599643478518' : imageKey === 'earrings' ? '1635767798638' : '1515562141207'}?auto=format&fit=crop&w=900&q=85`,
-  pieceType: pieceType as PieceType,
-}))
+  {
+    id: 'sets',
+    slug: 'sets',
+    name: 'الأطقم',
+    description: 'أطقم ذهب عيار 21 من مصنع الصايغ مع إمكانية شراء الطقم أو اختيار قطعه.',
+    image: 'https://www.alsayeghfactory.com/wp-content/uploads/2026/06/1000321217-1-600x800.jpg',
+    pieceType: 'other',
+  },
+  {
+    id: 'necklaces',
+    slug: 'necklaces',
+    name: 'القلائد',
+    description: 'قلائد ذهبية بحرينية وخليجية بتفاصيل تراثية ووزن واضح.',
+    image: 'https://www.alsayeghfactory.com/wp-content/uploads/2026/06/1000313039-900x600.jpg',
+    pieceType: 'necklace',
+  },
+  {
+    id: 'mazanat',
+    slug: 'mazanat',
+    name: 'المزانط',
+    description: 'مزانط ذهب عيار 21 بتصاميم بارزة للأطقم والمناسبات.',
+    image: 'https://www.alsayeghfactory.com/wp-content/uploads/2026/06/1000321217-600x800.jpg',
+    pieceType: 'other',
+  },
+  {
+    id: 'bracelets',
+    slug: 'bracelets',
+    name: 'الأساور',
+    description: 'أساور وبناجل ذهبية بتشطيب يدوي ونقوش خليجية.',
+    image: 'https://www.alsayeghfactory.com/wp-content/uploads/2026/06/1000320774-1-600x800.jpg',
+    pieceType: 'bracelet',
+  },
+  {
+    id: 'earrings',
+    slug: 'earrings',
+    name: 'التراكي',
+    description: 'تراكي ذهبية تكمل الأطقم وتناسب الهدايا والمناسبات.',
+    image: 'https://www.alsayeghfactory.com/wp-content/uploads/2026/06/1000321216-600x800.jpg',
+    pieceType: 'earrings',
+  },
+  {
+    id: 'rings',
+    slug: 'rings',
+    name: 'الخواتم',
+    description: 'خواتم ذهب عيار 21 مستوحاة من خطوط الأطقم الأساسية.',
+    image: 'https://www.alsayeghfactory.com/wp-content/uploads/2026/06/1000321219-600x800.jpg',
+    pieceType: 'ring',
+  },
+]
 
 export const collections: Collection[] = [
   {
@@ -163,49 +196,6 @@ export const collections: Collection[] = [
   },
 ]
 
-const names = [
-  'طقم عروس ملكي',
-  'قلادة لؤلؤ البحرين',
-  'سوار نقش المحرق',
-  'خاتم زهرة الخليج',
-  'تراكي التراث',
-  'أقراط الدانة',
-  'طقم ليلة الحناء',
-  'قلادة نخلة البحرين',
-  'سوار الدانة المفتوح',
-  'دبلة عهد الصايغ',
-  'مزناط اللؤلؤ',
-  'خاتم نقشة السدو',
-  'قلادة شمس الخليج',
-  'سوار عروس الرفاع',
-  'أقراط قصر البحرين',
-  'طقم دانة المحرق',
-  'خاتم موج البحر',
-  'تراكي ذهب مصقول',
-  'قلادة خط عربي',
-  'سوار جناح اللؤلؤ',
-  'دبلة نقش ملكي',
-  'أقراط وردة الذهب',
-  'مزناط حبة دانة',
-  'طقم أمواج الخليج',
-  'قلادة عيار الصايغ',
-  'سوار فجر المنامة',
-  'خاتم فص تراثي',
-  'تراكي ضوء الحناء',
-  'أقراط نخلة صغيرة',
-  'طقم الدانة الكبير',
-  'قلادة عقدة بحرينية',
-  'سوار نقشة اللوز',
-  'خاتم نجمة الرفاع',
-  'دبلة ذهب ناعم',
-  'مزناط صباح الخليج',
-  'أقراط خط اللؤلؤ',
-  'طقم ميثاق العروس',
-  'قلادة نقش الأجداد',
-  'سوار وعد الدانة',
-  'خاتم الصياغة القديمة',
-]
-
 const productImages = [
   'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=900&q=85',
   'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=900&q=85',
@@ -215,71 +205,256 @@ const productImages = [
   'https://images.unsplash.com/photo-1635767798638-3e25273a8236?auto=format&fit=crop&w=900&q=85',
 ]
 
-const pieceCycle: PieceType[] = ['other', 'necklace', 'bracelet', 'ring', 'bangle', 'earrings']
-const categoryCycle = ['sets', 'necklaces', 'bracelets', 'rings', 'bangles', 'earrings', 'mazanat', 'wedding']
-const collectionCycle = ['royal', 'danah', 'heritage', 'gulf', 'daily', 'limited']
+type SetPieceSeed = {
+  kind: 'مزناط' | 'تراكي' | 'خاتم' | 'بنجل' | 'قلادة' | 'سوار'
+  weight: number
+  price: number
+  image?: string
+}
 
-// Demo data: prices, weights, dates, and commercial details are placeholders for client presentation.
-export const products: Product[] = names.map((name, index) => {
-  const id = `p-${String(index + 1).padStart(4, '0')}`
-  const isSet = name.startsWith('طقم')
-  const categoryId = isSet ? 'sets' : categoryCycle[index % categoryCycle.length]
-  const pieceType = isSet ? 'other' : pieceCycle[index % pieceCycle.length]
-  const price = 285 + index * 72 + (isSet ? 1250 : 0)
-  return {
-    id,
-    slug: `product-${index + 1}`,
-    name,
-    shortDescription: 'قطعة ذهب عيار 21 بتشطيب يدوي ووزن موثق.',
-    description:
-      'صممت هذه القطعة لتجمع بين الحضور الخليجي الهادئ ودقة الصياغة البحرينية. السعر تقديري ويتغير حسب الوزن وسعر الذهب عند اعتماد الطلب.',
-    sku: `${isSet ? 'SET' : 'GLD'}-${10023 + index}`,
-    categoryId,
-    collectionId: collectionCycle[index % collectionCycle.length],
-    productType: isSet ? 'set' : index % 5 === 0 ? 'set-item' : 'single',
-    pieceType,
-    karat: 21,
-    weight: Number((8.5 + index * 1.35 + (isSet ? 31 : 0)).toFixed(1)),
-    price,
-    oldPrice: index % 7 === 0 ? price + 180 : undefined,
-    images: [productImages[index % productImages.length], productImages[(index + 2) % productImages.length]],
-    badges: [
-      index % 3 === 0 ? 'جديد' : '',
-      index % 4 === 0 ? 'الأكثر مبيعاً' : '',
-      index % 9 === 0 ? 'إصدار محدود' : '',
-    ].filter(Boolean),
-    stock: index % 11 === 0 ? 0 : 2 + (index % 9),
-    branchIds: ['bahrain-mall', 'manama-souq', 'riffa'],
-    relatedProductIds: [
-      `p-${String(((index + 1) % 40) + 1).padStart(4, '0')}`,
-      `p-${String(((index + 4) % 40) + 1).padStart(4, '0')}`,
+type SetSeed = {
+  id: string
+  slug: string
+  name: string
+  note?: string
+  range: string
+  image: string
+  detailImages: string[]
+  pieces: SetPieceSeed[]
+  featured?: boolean
+}
+
+const alsayeghImage = (file: string) =>
+  `https://www.alsayeghfactory.com/wp-content/uploads/2026/06/${file}`
+
+const setCatalog: SetSeed[] = [
+  {
+    id: 'khatmah',
+    slug: 'khatmah',
+    name: 'طقم خَتْمَة',
+    range: 'نطاق السعر من 673.20 د.ب إلى 3641.00 د.ب',
+    image: alsayeghImage('1000321217-1-600x800.jpg'),
+    detailImages: [alsayeghImage('1000321217-1-600x800.jpg'), alsayeghImage('1000321204-600x800.jpg')],
+    pieces: [
+      { kind: 'مزناط', weight: 65, price: 3641, image: alsayeghImage('1000321217-600x800.jpg') },
+      { kind: 'تراكي', weight: 20, price: 1122, image: alsayeghImage('1000321216-600x800.jpg') },
+      { kind: 'خاتم', weight: 12, price: 673.2, image: alsayeghImage('1000321219-600x800.jpg') },
     ],
-    setId: isSet ? `set-${(index % 8) + 1}` : undefined,
-    canBePurchasedSeparately: true,
-    canBeAddedToCustomSet: !isSet,
-    styleTags: [index % 2 ? 'هادئ' : 'فاخر', index % 3 ? 'تراثي' : 'عصري'],
-    compatibilityTags: [pieceType, collectionCycle[index % collectionCycle.length]],
-    isFeatured: index < 12,
-    isNew: index % 3 === 0,
-    isBestSeller: index % 4 === 0,
-  }
-})
+    featured: true,
+  },
+  {
+    id: 'jori-petals',
+    slug: 'jori-petals',
+    name: 'طقم بَتَلات الجُوري',
+    range: 'نطاق السعر من 673.20 د.ب إلى 3641.00 د.ب',
+    image: alsayeghImage('1000321180-600x720.jpg'),
+    detailImages: [alsayeghImage('1000321180-600x720.jpg'), alsayeghImage('1000321183-600x800.jpg')],
+    pieces: [
+      { kind: 'مزناط', weight: 65, price: 3641, image: alsayeghImage('1000321197.jpg') },
+      { kind: 'تراكي', weight: 20, price: 1122, image: alsayeghImage('1000321181-600x800.jpg') },
+      { kind: 'خاتم', weight: 12, price: 673.2, image: alsayeghImage('1000321195-600x800.jpg') },
+    ],
+    featured: true,
+  },
+  {
+    id: 'taj-jaber-nano',
+    slug: 'taj-jaber-nano',
+    name: 'طقم دقة تاج جابر النانو',
+    range: 'نطاق السعر من 363.00 د.ب إلى 1683.00 د.ب',
+    image: alsayeghImage('1000321172-600x800.jpg'),
+    detailImages: [alsayeghImage('1000321172-600x800.jpg'), alsayeghImage('1000321168-600x721.jpg')],
+    pieces: [
+      { kind: 'مزناط', weight: 30, price: 1683 },
+      { kind: 'تراكي', weight: 10, price: 561 },
+      { kind: 'خاتم', weight: 6, price: 363 },
+    ],
+    featured: true,
+  },
+  {
+    id: 'mirkaah',
+    slug: 'mirkaah',
+    name: 'طقم مِرْكاة',
+    note: 'مستوحى من اسم السلم أو الدرج قديماً.',
+    range: 'نطاق السعر من 319.00 د.ب إلى 1683.00 د.ب',
+    image: alsayeghImage('1000320779-600x800.jpg'),
+    detailImages: [alsayeghImage('1000320779-600x800.jpg'), alsayeghImage('1000320780-600x800.jpg')],
+    pieces: [
+      { kind: 'مزناط', weight: 30, price: 1683 },
+      { kind: 'تراكي', weight: 9, price: 504.9 },
+      { kind: 'خاتم', weight: 5, price: 319 },
+      { kind: 'بنجل', weight: 30, price: 1683 },
+    ],
+  },
+  {
+    id: 'hayam',
+    slug: 'hayam',
+    name: 'طقم الهيام',
+    range: 'نطاق السعر من 673.20 د.ب إلى 4180.00 د.ب',
+    image: alsayeghImage('1000320770-1-600x719.jpg'),
+    detailImages: [alsayeghImage('1000320770-1-600x719.jpg'), alsayeghImage('1000320774-1-600x800.jpg')],
+    pieces: [
+      { kind: 'مزناط', weight: 55, price: 3085.5 },
+      { kind: 'تراكي', weight: 22, price: 1234.2 },
+      { kind: 'بنجل', weight: 60, price: 3366 },
+      { kind: 'قلادة', weight: 75, price: 4180 },
+      { kind: 'خاتم', weight: 12, price: 673.2 },
+    ],
+  },
+  {
+    id: 'soljan',
+    slug: 'soljan',
+    name: 'طقم الصولجان',
+    range: 'نطاق السعر من 561.00 د.ب إلى 4180.00 د.ب',
+    image: alsayeghImage('1000319724-600x800.jpg'),
+    detailImages: [alsayeghImage('1000319724-600x800.jpg'), alsayeghImage('1000319726-1-600x800.jpg')],
+    pieces: [
+      { kind: 'مزناط', weight: 50, price: 2805 },
+      { kind: 'تراكي', weight: 22, price: 1234.2 },
+      { kind: 'بنجل', weight: 50, price: 2805 },
+      { kind: 'قلادة', weight: 75, price: 4180 },
+      { kind: 'خاتم', weight: 10, price: 561 },
+    ],
+  },
+  {
+    id: 'jadeel',
+    slug: 'jadeel',
+    name: 'طقم جَدِيل',
+    range: 'نطاق السعر من 407.00 د.ب إلى 2244.00 د.ب',
+    image: alsayeghImage('1000320682-600x800.jpg'),
+    detailImages: [alsayeghImage('1000320682-600x800.jpg'), alsayeghImage('1000320691-1-600x722.jpg')],
+    pieces: [
+      { kind: 'مزناط', weight: 40, price: 2244 },
+      { kind: 'تراكي', weight: 10, price: 561 },
+      { kind: 'خاتم', weight: 7, price: 407 },
+    ],
+  },
+  {
+    id: 'asayel',
+    slug: 'asayel',
+    name: 'طقم الأصايل',
+    range: 'نطاق السعر من 1402.50 د.ب إلى 18700.00 د.ب',
+    image: alsayeghImage('1000320648-600x800.jpg'),
+    detailImages: [alsayeghImage('1000320648-600x800.jpg'), alsayeghImage('1000320671-1-600x800.jpg')],
+    pieces: [
+      { kind: 'مزناط', weight: 50, price: 2805 },
+      { kind: 'تراكي', weight: 25, price: 1402.5 },
+      { kind: 'بنجل', weight: 75, price: 4207.5 },
+      { kind: 'قلادة', weight: 340, price: 18700 },
+    ],
+  },
+]
 
-export const jewelrySets: JewelrySet[] = Array.from({ length: 8 }, (_, index) => {
-  const setProducts = products.slice(index * 5, index * 5 + 5).map((product) => product.id)
+const pieceMeta: Record<SetPieceSeed['kind'], { categoryId: string; pieceType: PieceType; collectionId: string }> = {
+  مزناط: { categoryId: 'mazanat', pieceType: 'other', collectionId: 'heritage' },
+  تراكي: { categoryId: 'earrings', pieceType: 'earrings', collectionId: 'danah' },
+  خاتم: { categoryId: 'rings', pieceType: 'ring', collectionId: 'daily' },
+  بنجل: { categoryId: 'bracelets', pieceType: 'bangle', collectionId: 'gulf' },
+  قلادة: { categoryId: 'necklaces', pieceType: 'necklace', collectionId: 'royal' },
+  سوار: { categoryId: 'bracelets', pieceType: 'bracelet', collectionId: 'gulf' },
+}
+
+const fallbackPieceImages: Record<SetPieceSeed['kind'], string> = {
+  مزناط: alsayeghImage('1000321217-600x800.jpg'),
+  تراكي: alsayeghImage('1000321216-600x800.jpg'),
+  خاتم: alsayeghImage('1000321219-600x800.jpg'),
+  بنجل: alsayeghImage('1000320774-1-600x800.jpg'),
+  قلادة: alsayeghImage('1000313039-900x600.jpg'),
+  سوار: productImages[3],
+}
+
+const productFromSet = (set: SetSeed, setIndex: number): Product => {
+  const totalWeight = set.pieces.reduce((sum, piece) => sum + piece.weight, 0)
+  const totalPrice = set.pieces.reduce((sum, piece) => sum + piece.price, 0)
+
   return {
-    id: `set-${index + 1}`,
-    slug: `set-${index + 1}`,
-    name: ['طقم عروس ملكي', 'طقم الدانة الكبير', 'طقم ليلة الحناء', 'طقم أمواج الخليج'][index % 4],
-    description: 'طقم كامل من ذهب عيار 21 مع إمكانية شراء القطع كاملة أو اختيار بعضها لطقم مخصص.',
-    image: productImages[index % productImages.length],
-    productIds: setProducts,
-    canPurchaseFullSet: true,
-    canPurchaseItemsSeparately: true,
-    canCustomize: true,
-    discountPercentage: index % 2 === 0 ? 5 : undefined,
+    id: `set-product-${set.id}`,
+    slug: `set-${set.slug}`,
+    name: set.name,
+    shortDescription: `${set.range}. ${set.note ?? 'طقم ذهب عيار 21 بتصميم تراثي بحريني.'}`,
+    description:
+      `${set.name} من مصنع الصايغ للمجوهرات. ${set.range}. ` +
+      `يشمل ${set.pieces.map((piece) => `${piece.kind} ${piece.weight} غرام`).join('، ')}. ` +
+      (set.note ? `${set.note} ` : '') +
+      'يمكن شراء الطقم كاملاً أو اختيار القطع المناسبة لتكوين طقم مخصص.',
+    sku: `SET-${String(setIndex + 1).padStart(3, '0')}`,
+    categoryId: 'sets',
+    collectionId: setIndex < 2 ? 'royal' : setIndex % 2 ? 'heritage' : 'gulf',
+    productType: 'set',
+    pieceType: 'other',
+    karat: 21,
+    weight: Number(totalWeight.toFixed(1)),
+    price: Number(totalPrice.toFixed(2)),
+    images: set.detailImages,
+    badges: [set.featured ? 'جديدنا' : '', setIndex % 2 === 0 ? 'قابل للتخصيص' : 'قطع منفصلة'].filter(Boolean),
+    stock: 3 + setIndex,
+    branchIds: ['bahrain-mall', 'manama-souq', 'riffa'],
+    relatedProductIds: set.pieces.map((_, pieceIndex) => `${set.id}-${pieceIndex + 1}`),
+    setId: set.id,
+    canBePurchasedSeparately: true,
+    canBeAddedToCustomSet: false,
+    styleTags: ['تراثي', 'ذهب عيار 21', 'أطقم الصايغ'],
+    compatibilityTags: ['sets', set.id],
+    isFeatured: setIndex < 6,
+    isNew: setIndex < 3,
+    isBestSeller: setIndex === 0 || setIndex === 1 || setIndex === 7,
   }
-})
+}
+
+const productsFromPieces = (set: SetSeed, setIndex: number): Product[] =>
+  set.pieces.map((piece, pieceIndex) => {
+    const meta = pieceMeta[piece.kind]
+    const image = piece.image ?? fallbackPieceImages[piece.kind]
+    return {
+      id: `${set.id}-${pieceIndex + 1}`,
+      slug: `${set.slug}-${piece.kind}`,
+      name: `${piece.kind} ${set.name.replace('طقم ', '')}`,
+      shortDescription: `${piece.kind} من ${set.name} بوزن ${piece.weight} غرام.`,
+      description:
+        `${piece.kind} ذهب عيار 21 من ${set.name}. الوزن ${piece.weight} غرام والسعر ${piece.price.toFixed(2)} د.ب. ` +
+        'يمكن إضافتها لطقم مخصص أو شراؤها كقطعة منفصلة حسب التوفر.',
+      sku: `${piece.kind === 'مزناط' ? 'MZN' : piece.kind === 'تراكي' ? 'TRK' : piece.kind === 'خاتم' ? 'RNG' : piece.kind === 'قلادة' ? 'NCK' : 'BGL'}-${setIndex + 1}${pieceIndex + 1}`,
+      categoryId: meta.categoryId,
+      collectionId: meta.collectionId,
+      productType: 'set-item',
+      pieceType: meta.pieceType,
+      karat: 21,
+      weight: piece.weight,
+      price: piece.price,
+      images: [image, set.image],
+      badges: [pieceIndex === 0 ? 'من طقم كامل' : '', set.featured ? 'جديد' : ''].filter(Boolean),
+      stock: 4 + ((setIndex + pieceIndex) % 5),
+      branchIds: ['bahrain-mall', 'manama-souq', 'riffa'],
+      relatedProductIds: [`set-product-${set.id}`],
+      setId: set.id,
+      canBePurchasedSeparately: true,
+      canBeAddedToCustomSet: true,
+      styleTags: ['تراثي', piece.kind, 'عيار 21'],
+      compatibilityTags: [set.id, meta.categoryId],
+      isFeatured: setIndex < 2,
+      isNew: setIndex < 3,
+      isBestSeller: setIndex === 0 || setIndex === 1,
+    }
+  })
+
+export const products: Product[] = setCatalog.flatMap((set, index) => [
+  productFromSet(set, index),
+  ...productsFromPieces(set, index),
+])
+
+export const jewelrySets: JewelrySet[] = setCatalog.map((set, index) => ({
+  id: set.id,
+  slug: set.slug,
+  name: set.name,
+  description:
+    `${set.range}. ${set.note ?? 'طقم ذهب عيار 21 من مجموعات الصايغ.'} ` +
+    `يشمل ${set.pieces.map((piece) => `${piece.kind} ${piece.weight} غرام`).join('، ')}.`,
+  image: set.image,
+  productIds: set.pieces.map((_, pieceIndex) => `${set.id}-${pieceIndex + 1}`),
+  canPurchaseFullSet: true,
+  canPurchaseItemsSeparately: true,
+  canCustomize: true,
+  discountPercentage: index === 0 || index === 1 ? 5 : undefined,
+}))
 
 export const branches: Branch[] = [
   {
