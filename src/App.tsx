@@ -510,6 +510,7 @@ function CategoryPage() {
 function ProductPage() {
   const { slug } = useParams()
   const product = getProduct(slug)
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
   const { addToCart, addToCustomSet, addRecentlyViewed } = useStore()
   useEffect(() => {
     if (product) addRecentlyViewed(product.id)
@@ -522,7 +523,14 @@ function ProductPage() {
       <SEOHead title={product.name} description={product.shortDescription} />
       <div className="breadcrumbs"><Link to="/">الرئيسية</Link><span>/</span><Link to="/products">المنتجات</Link><span>/</span><strong>{product.name}</strong></div>
       <section className="product-detail">
-        <div className="gallery">{product.images.map((image) => <img key={image} src={image} alt={product.name} />)}</div>
+        <div className="gallery">
+          {product.images.map((image) => (
+            <button key={image} className="gallery-image-button" onClick={() => setPreviewImage(image)}>
+              <img src={image} alt={product.name} />
+              <span><Search size={18} /> عرض الصورة كاملة</span>
+            </button>
+          ))}
+        </div>
         <div className="detail-panel">
           <p className="eyebrow">{product.sku}</p>
           <h1>{product.name}</h1>
@@ -537,6 +545,41 @@ function ProductPage() {
           </div>
         </div>
       </section>
+      <AnimatePresence>
+        {previewImage ? (
+          <motion.div
+            className="image-preview-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`صورة ${product.name} كاملة`}
+            onClick={() => setPreviewImage(null)}
+          >
+            <motion.div
+              className="image-preview-dialog"
+              initial={{ opacity: 0, y: 18, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 18, scale: 0.96 }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button className="icon-button preview-close" aria-label="إغلاق الصورة" onClick={() => setPreviewImage(null)}>
+                <X />
+              </button>
+              <img src={previewImage} alt={product.name} />
+              <div>
+                <strong>{product.name}</strong>
+                <span>{product.weight} غرام · ذهب عيار {product.karat}</span>
+                <button disabled={!product.stock} onClick={() => addToCart({ type: 'product', productId: product.id })}>
+                  <ShoppingBag size={18} />
+                  أضف للسلة
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
       <section className="band"><SectionHeading eyebrow="منتجات ذات صلة" title="قطع تكمل اختيارك" /><ProductGrid items={related} /></section>
       <RecentlyViewed />
     </motion.main>
