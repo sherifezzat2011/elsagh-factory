@@ -672,6 +672,12 @@ button,
   border-color: rgba(176, 56, 56, 0.48);
 }
 
+.product-quick-actions .quick-fav.active svg,
+.card-actions .active svg,
+.cart-item-actions button.active svg {
+  fill: currentColor;
+}
+
 .product-quick-actions .quick-cart {
   padding: 9px 12px;
   color: white;
