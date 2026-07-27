@@ -38,6 +38,7 @@ interface StoreState {
   toggleWishlist: (productId: string) => void
   addToCustomSet: (productId: string) => void
   addManyToCustomSet: (productIds: string[]) => void
+  updateCustomSetQuantity: (productId: string, quantity: number) => void
   removeFromCustomSet: (productId: string) => void
   saveCustomSet: (name: string) => void
   clearCustomSet: () => void
@@ -108,6 +109,12 @@ export const useStore = create<StoreState>()(
             toast: 'تمت إضافة القطع إلى طقمك بنجاح.',
           }
         }),
+      updateCustomSetQuantity: (productId, quantity) =>
+        set((state) => ({
+          customSet: state.customSet.map((item) =>
+            item.productId === productId ? { ...item, quantity: Math.max(1, quantity) } : item,
+          ),
+        })),
       removeFromCustomSet: (productId) =>
         set((state) => ({
           customSet: state.customSet.filter((item) => item.productId !== productId),

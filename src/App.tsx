@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -580,71 +580,433 @@ function SetCard({ set }: { set: (typeof jewelrySets)[number] }) {
 }
 
 function BuilderPage() {
-  const { customSet, saveCustomSet, clearCustomSet, removeFromCustomSet } = useStore()
-  const selected = customSet.map((item) => products.find((product) => product.id === item.productId)).filter(Boolean) as Product[]
-  const total = selected.reduce((sum, product) => sum + product.price, 0)
-  const weight = selected.reduce((sum, product) => sum + product.weight, 0).toFixed(1)
-  const message = encodeURIComponent(`مرحباً، أرغب في الاستفسار عن طقم مخصص يحتوي على: ${selected.map((item) => item.name).join('، ')}. الوزن الإجمالي ${weight} غرام والسعر التقديري ${formatPrice(total)}.`)
+  const [activeTab, setActiveTab] = useState<'products' | 'summary'>('products')
+  const [setName, setSetName] = useState('طقم المناسبات الفاخر')
+  const [summaryOpen, setSummaryOpen] = useState(false)
+  const {
+    customSet,
+    saveCustomSet,
+    clearCustomSet,
+    removeFromCustomSet,
+    updateCustomSetQuantity,
+  } = useStore()
+  const selected = customSet
+    .map((item) => {
+      const product = products.find((entry) => entry.id === item.productId)
+      return product ? { product, quantity: item.quantity } : null
+    })
+    .filter(Boolean) as SelectedSetEntry[]
+  const total = selected.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+  const weight = selected.reduce((sum, item) => sum + item.product.weight * item.quantity, 0)
+  const message = encodeURIComponent(`مرحباً، أرغب في الاستفسار عن طقم مخصص باسم ${setName} يحتوي على: ${selected.map((item) => `${item.product.name} × ${item.quantity}`).join('، ')}. الوزن الإجمالي ${weight.toFixed(1)} غرام والسعر التقديري ${formatPrice(total)}.`)
+  const hasItems = selected.length > 0
+  const customSetProducts = products.filter((product) => product.canBeAddedToCustomSet).slice(0, 24)
+  const saveCurrentSet = () => saveCustomSet(setName.trim() || 'طقم مخصص')
+
   return (
     <motion.main className="page" {...pageMotion}>
       <SEOHead title="صمّم طقمك" description="أداة تجريبية لتكوين طقم مجوهرات مخصص." />
       <PageHero title="صمّم طقمك الخاص" text="اختر قطعاً من التصنيفات المختلفة واحفظها كطقم مخصص." />
       <BuilderSteps selectedCount={selected.length} />
-      <div className="builder-layout builder-layout-premium">
+      <CustomSetTabs activeTab={activeTab} selectedCount={selected.length} onChange={setActiveTab} />
+      <div className="builder-layout builder-layout-premium luxury-configurator">
         <section className="builder-products" id="builder-products">
-          <div className="builder-toolbar">
-            <div>
-              <span>الخطوة الثانية</span>
-              <h2>استعرض القطع المناسبة</h2>
-            </div>
-            <Link to="/sets">عرض الأطقم الجاهزة</Link>
-          </div>
-          <ProductGrid items={products.filter((product) => product.canBeAddedToCustomSet).slice(0, 24)} />
-        </section>
-        <aside className="builder-summary builder-summary-premium">
-          <span className="summary-label">الملخص</span>
-          <h3>طقمك المخصص</h3>
-          {selected.length ? (
-            <div className="selected-piece-list">
-              {selected.map((product) => (
-                <div className="selected-piece" key={product.id}>
-                  <img src={product.images[0]} alt={product.name} />
-                  <div>
-                    <strong>{product.name}</strong>
-                    <span>{product.weight} غرام</span>
-                    <span>{formatPrice(product.price)}</span>
-                  </div>
-                  <div className="piece-actions">
-                    <button aria-label="استبدال القطعة" title="استبدال القطعة">
-                      <SlidersHorizontal size={15} />
-                    </button>
-                    <button aria-label="إزالة القطعة" onClick={() => removeFromCustomSet(product.id)}>
-                      <X size={15} />
-                    </button>
-                  </div>
+          {activeTab === 'products' ? (
+            <>
+              <div className="builder-toolbar luxury-toolbar">
+                <div>
+                  <span>الخطوة الثانية</span>
+                  <h2>استعرض القطع المناسبة</h2>
+                  <p>اختر مزناطاً أو تراكي أو خاتماً من أطقم مختلفة، والملخص يتحدث فوراً.</p>
                 </div>
-              ))}
-            </div>
+                <Link to="/sets">عرض الأطقم الجاهزة</Link>
+              </div>
+              <ProductGrid items={customSetProducts} />
+            </>
           ) : (
-            <div className="builder-empty">
-              <Gem />
-              <h3>لم تضف أي قطعة بعد</h3>
-              <p>ابدأ باختيار القطع التي تناسب ذوقك.</p>
-              <a href="#builder-products">استعرض القطع</a>
-            </div>
+            <section className="custom-set-workspace" aria-label="أطقمي المخصصة">
+              <div className="builder-toolbar luxury-toolbar">
+                <div>
+                  <span>طقمك الحالي</span>
+                  <h2>القطع المختارة</h2>
+                  <p>راجع القطع، عدّل الكميات، واحذف أو استبدل أي قطعة قبل الحفظ.</p>
+                </div>
+                <a href="#builder-products" onClick={() => setActiveTab('products')}>إضافة قطع أخرى</a>
+              </div>
+              {hasItems ? (
+                <motion.div className="selected-products-stack" layout>
+                  <AnimatePresence initial={false}>
+                    {selected.map((item) => (
+                      <SelectedProductCard
+                        key={item.product.id}
+                        item={item}
+                        onQuantity={(quantity) => updateCustomSetQuantity(item.product.id, quantity)}
+                        onRemove={() => removeFromCustomSet(item.product.id)}
+                        onReplace={() => setActiveTab('products')}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
+              ) : (
+                <BuilderEmptyState onBrowse={() => setActiveTab('products')} />
+              )}
+              <AddMoreProductsCard onClick={() => setActiveTab('products')} />
+            </section>
           )}
-          <div className="summary-totals">
-            <span>إجمالي القطع <strong>{selected.length}</strong></span>
-            <span>إجمالي الوزن <strong>{weight} غرام</strong></span>
-            <span>السعر التقديري <strong>{formatPrice(total)}</strong></span>
-          </div>
-          <button onClick={() => saveCustomSet('طقم مخصص')}>حفظ الطقم</button>
-          <button onClick={() => saveCustomSet('طقم مخصص')}>إضافة إلى السلة</button>
-          <button className="secondary-button" onClick={clearCustomSet}>تفريغ الاختيارات</button>
-          <a className="whatsapp" href={`https://wa.me/97339991122?text=${message}`} target="_blank" rel="noreferrer">مساعدة عبر واتساب</a>
-        </aside>
+        </section>
+        <StickySummary
+          entries={selected}
+          setName={setName}
+          onNameChange={setSetName}
+          total={total}
+          weight={weight}
+          message={message}
+          isOpen={summaryOpen}
+          onToggle={() => setSummaryOpen((current) => !current)}
+          onAddToCart={saveCurrentSet}
+          onSave={saveCurrentSet}
+          onClear={clearCustomSet}
+          hasItems={hasItems}
+        />
       </div>
     </motion.main>
+  )
+}
+
+type SelectedSetEntry = {
+  product: Product
+  quantity: number
+}
+
+function CustomSetTabs({
+  activeTab,
+  selectedCount,
+  onChange,
+}: {
+  activeTab: 'products' | 'summary'
+  selectedCount: number
+  onChange: (tab: 'products' | 'summary') => void
+}) {
+  return (
+    <nav className="custom-set-tabs" aria-label="تنقل أداة تصميم الطقم">
+      <button className={activeTab === 'products' ? 'active' : ''} onClick={() => onChange('products')}>
+        <Gem size={18} />
+        القطع المفردة
+      </button>
+      <button className={activeTab === 'summary' ? 'active' : ''} onClick={() => onChange('summary')}>
+        <PackageCheck size={18} />
+        أطقمي المخصصة
+        <motion.span
+          key={selectedCount}
+          initial={{ scale: 0.72 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 420, damping: 18 }}
+        >
+          {selectedCount}
+        </motion.span>
+      </button>
+    </nav>
+  )
+}
+
+function CustomSetSummaryCard({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return <div className={`custom-summary-card ${className}`}>{children}</div>
+}
+
+function StickySummary({
+  entries,
+  setName,
+  onNameChange,
+  total,
+  weight,
+  message,
+  isOpen,
+  onToggle,
+  onAddToCart,
+  onSave,
+  onClear,
+  hasItems,
+}: {
+  entries: SelectedSetEntry[]
+  setName: string
+  onNameChange: (name: string) => void
+  total: number
+  weight: number
+  message: string
+  isOpen: boolean
+  onToggle: () => void
+  onAddToCart: () => void
+  onSave: () => void
+  onClear: () => void
+  hasItems: boolean
+}) {
+  return (
+    <>
+      <aside className="sticky-summary-desktop">
+        <CustomSetSummary
+          entries={entries}
+          setName={setName}
+          onNameChange={onNameChange}
+          total={total}
+          weight={weight}
+          message={message}
+          onAddToCart={onAddToCart}
+          onSave={onSave}
+          onClear={onClear}
+          hasItems={hasItems}
+        />
+      </aside>
+      <aside className={isOpen ? 'sticky-summary-mobile open' : 'sticky-summary-mobile'}>
+        <button className="mobile-summary-handle" onClick={onToggle} aria-expanded={isOpen}>
+          <span />
+          <strong>طقمك</strong>
+          <small>{entries.length} قطع</small>
+          <b>{formatPrice(total)}</b>
+        </button>
+        <AnimatePresence>
+          {isOpen ? (
+            <motion.div initial={{ y: 24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 24, opacity: 0 }}>
+              <CustomSetSummary
+                entries={entries}
+                setName={setName}
+                onNameChange={onNameChange}
+                total={total}
+                weight={weight}
+                message={message}
+                onAddToCart={onAddToCart}
+                onSave={onSave}
+                onClear={onClear}
+                hasItems={hasItems}
+                compact
+              />
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+      </aside>
+    </>
+  )
+}
+
+function CustomSetSummary({
+  entries,
+  setName,
+  onNameChange,
+  total,
+  weight,
+  message,
+  onAddToCart,
+  onSave,
+  onClear,
+  hasItems,
+  compact = false,
+}: {
+  entries: SelectedSetEntry[]
+  setName: string
+  onNameChange: (name: string) => void
+  total: number
+  weight: number
+  message: string
+  onAddToCart: () => void
+  onSave: () => void
+  onClear: () => void
+  hasItems: boolean
+  compact?: boolean
+}) {
+  return (
+    <motion.div className="custom-set-summary" layout>
+      <header>
+        <span>ملخص طقمك</span>
+        <strong>{entries.length ? `${entries.length} قطع مختارة` : 'ابدأ بالاختيار'}</strong>
+      </header>
+      <CustomSetSummaryCard className="set-name-card">
+        <label htmlFor={compact ? 'mobile-set-name' : 'set-name'}>اسم الطقم</label>
+        <div>
+          <input
+            id={compact ? 'mobile-set-name' : 'set-name'}
+            value={setName}
+            onChange={(event) => onNameChange(event.target.value)}
+          />
+          <SlidersHorizontal size={17} />
+        </div>
+      </CustomSetSummaryCard>
+      <SummaryStatistics entries={entries} total={total} weight={weight} />
+      <SummaryActions onAddToCart={onAddToCart} onSave={onSave} onClear={onClear} hasItems={hasItems} />
+      <p className="summary-notice">السعر تقديري وقد يتغير حسب الوزن النهائي وسعر الذهب يوم الشراء.</p>
+      <WhatsAppConsultationCard message={message} />
+      {compact && entries.length ? (
+        <div className="mobile-summary-products">
+          {entries.map((item) => (
+            <div key={item.product.id}>
+              <img src={item.product.images[0]} alt={item.product.name} />
+              <span>{item.product.name}</span>
+              <strong>× {item.quantity}</strong>
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </motion.div>
+  )
+}
+
+function SummaryStatistics({
+  entries,
+  total,
+  weight,
+}: {
+  entries: SelectedSetEntry[]
+  total: number
+  weight: number
+}) {
+  const pieceCount = entries.reduce((sum, item) => sum + item.quantity, 0)
+  return (
+    <CustomSetSummaryCard className="summary-statistics">
+      <div>
+        <PackageCheck />
+        <span>إجمالي القطع</span>
+        <strong>{pieceCount}</strong>
+      </div>
+      <div>
+        <Gem />
+        <span>إجمالي الوزن</span>
+        <strong>{weight.toFixed(1)} غرام</strong>
+      </div>
+      <div>
+        <ShoppingBag />
+        <span>السعر التقديري</span>
+        <strong>{formatPrice(total)}</strong>
+      </div>
+    </CustomSetSummaryCard>
+  )
+}
+
+function SummaryActions({
+  onAddToCart,
+  onSave,
+  onClear,
+  hasItems,
+}: {
+  onAddToCart: () => void
+  onSave: () => void
+  onClear: () => void
+  hasItems: boolean
+}) {
+  return (
+    <div className="summary-actions">
+      <button onClick={onAddToCart} disabled={!hasItems}>
+        <ShoppingBag size={18} />
+        أضف الطقم إلى السلة
+      </button>
+      <Link to="/build-your-set" className="summary-outline">
+        <SlidersHorizontal size={18} />
+        الانتقال إلى أداة تصميم الطقم
+      </Link>
+      <button className="summary-ghost" onClick={onSave} disabled={!hasItems}>
+        <Paperclip size={18} />
+        حفظ الطقم للمستقبل
+      </button>
+      <button className="summary-clear" onClick={onClear} disabled={!hasItems}>
+        تفريغ الاختيارات
+      </button>
+    </div>
+  )
+}
+
+function WhatsAppConsultationCard({ message }: { message: string }) {
+  return (
+    <CustomSetSummaryCard className="whatsapp-consultation-card">
+      <span>Need help?</span>
+      <strong>تحدث مع مستشار المجوهرات</strong>
+      <a href={`https://wa.me/97339991122?text=${message}`} target="_blank" rel="noreferrer">
+        <MessageCircle size={18} />
+        واتساب
+      </a>
+    </CustomSetSummaryCard>
+  )
+}
+
+function SelectedProductCard({
+  item,
+  onQuantity,
+  onRemove,
+  onReplace,
+}: {
+  item: SelectedSetEntry
+  onQuantity: (quantity: number) => void
+  onRemove: () => void
+  onReplace: () => void
+}) {
+  return (
+    <motion.article
+      className="selected-product-card"
+      layout
+      initial={{ opacity: 0, y: 12, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, x: 24, scale: 0.97 }}
+      whileHover={{ y: -3 }}
+    >
+      <div className="selected-product-tools">
+        <button aria-label="تحريك القطعة" title="تحريك القطعة">
+          <Menu size={17} />
+        </button>
+        <button aria-label="حذف القطعة" title="حذف القطعة" onClick={onRemove}>
+          <Trash2 size={17} />
+        </button>
+      </div>
+      <div className="selected-product-info">
+        <span>{getCategory(item.product.categoryId)?.name ?? 'قطعة ذهبية'}</span>
+        <h3>{item.product.name}</h3>
+        <div className="selected-product-badges">
+          <b>{item.product.weight} غرام</b>
+          <b>ذهب عيار {item.product.karat}</b>
+          <b>{formatPrice(item.product.price)}</b>
+        </div>
+        <div className="selected-product-bottom">
+          <QuantityStepper value={item.quantity} onChange={onQuantity} />
+          <button onClick={onReplace}>
+            <SlidersHorizontal size={16} />
+            استبدال
+          </button>
+        </div>
+      </div>
+      <div className="selected-product-thumb">
+        <img src={item.product.images[0]} alt={item.product.name} />
+      </div>
+    </motion.article>
+  )
+}
+
+function QuantityStepper({ value, onChange }: { value: number; onChange: (quantity: number) => void }) {
+  return (
+    <div className="quantity-stepper" aria-label="تحديد الكمية">
+      <button onClick={() => onChange(value - 1)} aria-label="تقليل الكمية">
+        <Minus size={15} />
+      </button>
+      <span>{value}</span>
+      <button onClick={() => onChange(value + 1)} aria-label="زيادة الكمية">
+        <Plus size={15} />
+      </button>
+    </div>
+  )
+}
+
+function AddMoreProductsCard({ onClick }: { onClick: () => void }) {
+  return (
+    <button className="add-more-products-card" onClick={onClick}>
+      <span><Plus /></span>
+      <strong>أضف قطعاً من أطقم أخرى</strong>
+      <small>استعرض المزيد من القطع من أطقم مختلفة وأضفها إلى طقمك.</small>
+    </button>
+  )
+}
+
+function BuilderEmptyState({ onBrowse }: { onBrowse: () => void }) {
+  return (
+    <div className="builder-empty luxury-builder-empty">
+      <Gem />
+      <h3>لم تضف أي قطعة بعد</h3>
+      <p>ابدأ باختيار القطع التي تناسب ذوقك وسيظهر الملخص هنا فوراً.</p>
+      <button onClick={onBrowse}>استعرض القطع</button>
+    </div>
   )
 }
 
