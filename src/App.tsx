@@ -1515,18 +1515,40 @@ function ContactForm({ checkout = false }: { checkout?: boolean }) {
   if (sent) return <div className="success-box"><CheckCircle2 /><h3>تم إرسال الطلب بنجاح</h3><p>هذه رسالة نجاح تجريبية، ولا يتم إرسال البيانات لخادم حقيقي.</p></div>
   return (
     <form className="contact-form" onSubmit={handleSubmit(() => setSent(true))}>
-      <label>الاسم الكامل<input {...register('name')} /></label>{errors.name ? <small>{errors.name.message}</small> : null}
-      <label>الهاتف<input {...register('phone')} /></label>{errors.phone ? <small>{errors.phone.message}</small> : null}
-      <label>نوع الطلب<select {...register('requestType')}><option value="">اختر</option><option>طلب شراء</option><option>طلب تصميم خاص</option><option>استفسار عن منتج</option><option>استفسار جملة</option><option>شكوى أو اقتراح</option></select></label>{errors.requestType ? <small>{errors.requestType.message}</small> : null}
-      <label>الفرع<select {...register('branch')}><option value="">اختر الفرع</option>{branches.map((branch) => <option key={branch.id}>{branch.name}</option>)}</select></label>{errors.branch ? <small>{errors.branch.message}</small> : null}
-      <label>{checkout ? 'ملاحظات الطلب' : 'رسالتك'}<textarea {...register('message')} /></label>{errors.message ? <small>{errors.message.message}</small> : null}
-      <button type="submit">{checkout ? 'تأكيد الطلب التجريبي' : 'إرسال الطلب'}</button>
+      <div className="contact-form-header">
+        <span><MessageCircle size={18} /> طلب خاص</span>
+        <h2>{checkout ? 'تأكيد بيانات الطلب' : 'دعنا نساعدك في اختيار قطعتك'}</h2>
+        <p>{checkout ? 'أضف بياناتك وملاحظاتك لتأكيد الطلب داخل التجربة.' : 'اكتب بيانات التواصل ونوع الطلب، وسيظهر تأكيد داخل الواجهة.'}</p>
+      </div>
+      <div className="contact-form-grid">
+        <div className="form-field">
+          <label>الاسم الكامل<input {...register('name')} /></label>
+          {errors.name ? <small>{errors.name.message}</small> : null}
+        </div>
+        <div className="form-field">
+          <label>الهاتف<input {...register('phone')} /></label>
+          {errors.phone ? <small>{errors.phone.message}</small> : null}
+        </div>
+        <div className="form-field">
+          <label>نوع الطلب<select {...register('requestType')}><option value="">اختر</option><option>طلب شراء</option><option>طلب تصميم خاص</option><option>استفسار عن منتج</option><option>استفسار جملة</option><option>شكوى أو اقتراح</option></select></label>
+          {errors.requestType ? <small>{errors.requestType.message}</small> : null}
+        </div>
+        <div className="form-field">
+          <label>الفرع<select {...register('branch')}><option value="">اختر الفرع</option>{branches.map((branch) => <option key={branch.id}>{branch.name}</option>)}</select></label>
+          {errors.branch ? <small>{errors.branch.message}</small> : null}
+        </div>
+        <div className="form-field full">
+          <label>{checkout ? 'ملاحظات الطلب' : 'رسالتك'}<textarea {...register('message')} /></label>
+          {errors.message ? <small>{errors.message.message}</small> : null}
+        </div>
+      </div>
+      <button type="submit" className="contact-submit">{checkout ? 'تأكيد الطلب التجريبي' : 'إرسال الطلب'}</button>
     </form>
   )
 }
 
 function CheckoutPage() {
-  return <motion.main className="page narrow" {...pageMotion}><SEOHead title="الدفع التجريبي" description="تجربة Checkout شكلية لمتجر الصايغ." /><PageHero title="الدفع التجريبي" text="أدخل بيانات تجريبية لتأكيد الطلب داخل الواجهة." /><ContactForm checkout /></motion.main>
+  return <motion.main className="page narrow contact-page" {...pageMotion}><SEOHead title="الدفع التجريبي" description="تجربة Checkout شكلية لمتجر الصايغ." /><PageHero title="الدفع التجريبي" text="أدخل بيانات تجريبية لتأكيد الطلب داخل الواجهة." /><ContactForm checkout /></motion.main>
 }
 
 function AboutPage() {
@@ -1663,7 +1685,7 @@ function BranchesPage() {
 }
 
 function ContactPage() {
-  return <motion.main className="page narrow" {...pageMotion}><SEOHead title="تواصل معنا" description="نموذج تواصل تجريبي." /><PageHero title="تواصل معنا" text="اختر نوع الطلب والفرع المناسب وسيظهر تأكيد داخل الواجهة." /><ContactForm /></motion.main>
+  return <motion.main className="page narrow contact-page" {...pageMotion}><SEOHead title="تواصل معنا" description="نموذج تواصل تجريبي." /><PageHero title="تواصل معنا" text="اختر نوع الطلب والفرع المناسب وسيظهر تأكيد داخل الواجهة." /><ContactForm /></motion.main>
 }
 
 function RecentlyViewed() {
