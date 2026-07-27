@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -11,10 +11,13 @@ import {
   ChevronLeft,
   ChevronDown,
   Clock3,
+  CreditCard,
   Gem,
+  GripVertical,
   Heart,
   Headphones,
   CalendarDays,
+  LockKeyhole,
   MapPin,
   Menu,
   MessageCircle,
@@ -22,14 +25,17 @@ import {
   Paperclip,
   PackageCheck,
   Plus,
+  RefreshCcw,
   Search,
   Send,
+  ShieldCheck,
   ShoppingBag,
   SlidersHorizontal,
   Sparkles,
   Star,
   Swords,
   Trash2,
+  Truck,
   UserRound,
   Navigation,
   Phone,
@@ -366,23 +372,49 @@ function ProductGrid({ items }: { items: Product[] }) {
   return <div className="product-grid">{items.map((product) => <ProductCard key={product.id} product={product} />)}</div>
 }
 
+function BrandFilmHero() {
+  const filmImages = [
+    jewelrySets[0]?.image,
+    products.find((product) => product.pieceType === 'earrings')?.images[0],
+    products.find((product) => product.pieceType === 'ring')?.images[0],
+    jewelrySets[3]?.image,
+  ].filter(Boolean) as string[]
+
+  return (
+    <section className="brand-film-hero" aria-label="فيلم مصنع الصايغ">
+      <div className="brand-film-stage" aria-hidden="true">
+        {filmImages.map((image, index) => (
+          <figure key={image} className="brand-film-frame" style={{ '--frame-index': index } as CSSProperties}>
+            <img src={image} alt="" />
+          </figure>
+        ))}
+        <div className="brand-film-grain" />
+      </div>
+      <div className="brand-film-content">
+        <span>مصنع الصايغ للمجوهرات · Since 1783</span>
+        <h1>ذهب بحريني يحمل الحكاية قبل اللمعة</h1>
+        <p>لقطات سريعة من أطقمنا وقطعنا التراثية، مصاغة بروح السيوف والخناجر والحرفة البحرينية الأصيلة.</p>
+        <div className="hero-actions">
+          <Link to="/products">تسوق المجموعة</Link>
+          <Link to="/factory" className="secondary">حكاية المصنع</Link>
+          <Link to="/build-your-set" className="secondary">صمّم طقمك</Link>
+        </div>
+      </div>
+      <div className="brand-film-meta" aria-label="ملخص سريع">
+        <span><Gem /> ذهب عيار 21</span>
+        <span><Swords /> تراث بحريني</span>
+        <span><Sparkles /> أطقم مخصصة</span>
+      </div>
+    </section>
+  )
+}
+
 function HomePage() {
   const featured = products.filter((product) => product.isFeatured)
   return (
     <motion.main {...pageMotion}>
       <SEOHead title="الرئيسية" description="متجر عربي تجريبي فاخر لمصنع الصايغ للمجوهرات في البحرين." />
-      <section className="hero-section" style={{ backgroundImage: `linear-gradient(90deg, rgba(3,31,26,.88), rgba(6,44,37,.52)), url(${asset.hero})` }}>
-        <div className="hero-content">
-          <span>مصنع بحريني للمجوهرات</span>
-          <h1>حرفة توارثناها منذ 1783</h1>
-          <p>أكثر من قرنين من الخبرة في صياغة المجوهرات البحرينية الأصيلة، بتصاميم تجمع بين التراث والدقة والفخامة.</p>
-          <div className="hero-actions">
-            <Link to="/collections">اكتشف المجموعات</Link>
-            <Link to="/products" className="secondary">تسوّق الآن</Link>
-            <Link to="/build-your-set" className="secondary">صمّم طقمك الخاص</Link>
-          </div>
-        </div>
-      </section>
+      <BrandFilmHero />
       <TrustBar />
       <section className="band">
         <SectionHeading eyebrow="التصنيفات" title="اختر القطع التي تناسب ذوقك" />
@@ -1189,10 +1221,55 @@ function SetCustomizeDrawer({
 }
 
 function CartPage() {
-  const { cart, removeFromCart, updateCartQuantity } = useStore()
+  const { cart, removeFromCart, updateCartQuantity, toggleWishlist, wishlist } = useStore()
   const total = cart.reduce((sum, item) => sum + cartItemPrice(item) * item.quantity, 0)
-  if (!cart.length) return <EmptyPage title="السلة فارغة" text="ابدأ بإضافة منتجات أو أطقم مخصصة." action="/products" actionText="تسوق الآن" />
-  return <motion.main className="page" {...pageMotion}><SEOHead title="السلة" description="مراجعة السلة التجريبية." /><PageHero title="السلة" text="راجع القطع المختارة قبل تجربة الدفع." /><div className="cart-layout"><section>{cart.map((item) => <CartRow key={item.id} item={item} onRemove={removeFromCart} onQuantity={updateCartQuantity} />)}</section><aside className="checkout-card"><h3>ملخص الطلب</h3><p>الإجمالي التقديري</p><strong>{formatPrice(total)}</strong><Link to="/checkout">متابعة الدفع التجريبي</Link></aside></div></motion.main>
+  const pieceCount = cart.reduce((sum, item) => sum + item.quantity, 0)
+  const totalWeight = cart.reduce((sum, item) => sum + cartItemWeight(item) * item.quantity, 0)
+  const clearCart = () => cart.forEach((item) => removeFromCart(item.id))
+
+  return (
+    <motion.main className="cart-page" {...pageMotion}>
+      <SEOHead title="السلة" description="مراجعة السلة التجريبية." />
+      <CartPageHeader />
+      {!cart.length ? (
+        <EmptyCartState />
+      ) : (
+        <>
+          <section className="luxury-cart-layout">
+            <CartSummary total={total} pieceCount={pieceCount} totalWeight={totalWeight} />
+            <section className="cart-items-section" aria-label="محتويات السلة">
+              <header>
+                <div>
+                  <span>اختياراتك</span>
+                  <h2>محتويات السلة ({cart.length})</h2>
+                </div>
+                <button className="cart-delete-all" onClick={clearCart}>
+                  <Trash2 size={17} />
+                  حذف الكل
+                </button>
+              </header>
+              <motion.div className="cart-items-stack" layout>
+                <AnimatePresence initial={false}>
+                  {cart.map((item) => (
+                    <CartItemCard
+                      key={item.id}
+                      item={item}
+                      onRemove={removeFromCart}
+                      onQuantity={updateCartQuantity}
+                      onToggleWishlist={toggleWishlist}
+                      wishlist={wishlist}
+                    />
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+              <ContinueShoppingCard />
+            </section>
+          </section>
+          <CartFeatures />
+        </>
+      )}
+    </motion.main>
+  )
 }
 
 function cartItemPrice(item: CartItem) {
@@ -1204,12 +1281,228 @@ function cartItemPrice(item: CartItem) {
   return item.customSet?.items.reduce((sum, entry) => sum + (products.find((product) => product.id === entry.productId)?.price ?? 0), 0) ?? 0
 }
 
-function CartRow({ item, onRemove, onQuantity }: { item: CartItem; onRemove: (id: string) => void; onQuantity: (id: string, quantity: number) => void }) {
+function cartItemWeight(item: CartItem) {
+  if (item.productId) return products.find((product) => product.id === item.productId)?.weight ?? 0
+  if (item.setId) {
+    const set = jewelrySets.find((entry) => entry.id === item.setId)
+    return set?.productIds.reduce((sum, id) => sum + (products.find((product) => product.id === id)?.weight ?? 0), 0) ?? 0
+  }
+  return item.customSet?.items.reduce((sum, entry) => sum + (products.find((product) => product.id === entry.productId)?.weight ?? 0), 0) ?? 0
+}
+
+function cartItemDetails(item: CartItem) {
   const product = item.productId ? products.find((entry) => entry.id === item.productId) : undefined
   const set = item.setId ? jewelrySets.find((entry) => entry.id === item.setId) : undefined
   const title = product?.name ?? set?.name ?? item.customSet?.name ?? 'طقم مخصص'
   const image = product?.images[0] ?? set?.image ?? asset.fallback
-  return <article className="cart-row"><img src={image} alt={title} /><div><h3>{title}</h3><p>{formatPrice(cartItemPrice(item))}</p></div><div className="quantity"><button onClick={() => onQuantity(item.id, item.quantity - 1)}><Minus /></button><span>{item.quantity}</span><button onClick={() => onQuantity(item.id, item.quantity + 1)}><Plus /></button></div><button className="icon-button" aria-label="إزالة" onClick={() => onRemove(item.id)}><Trash2 /></button></article>
+  const category = product ? getCategory(product.categoryId)?.name : set ? 'طقم كامل' : 'طقم مخصص'
+  const productId = product?.id
+  return { product, set, title, image, category, productId }
+}
+
+function CartPageHeader() {
+  return (
+    <header className="cart-page-header">
+      <span>مصنع الصايغ للمجوهرات</span>
+      <h1>السلة</h1>
+      <div aria-hidden="true"><span /><Gem /><span /></div>
+      <p>راجع القطع المختارة قبل متابعة الطلب.</p>
+    </header>
+  )
+}
+
+function CartSummary({
+  total,
+  pieceCount,
+  totalWeight,
+}: {
+  total: number
+  pieceCount: number
+  totalWeight: number
+}) {
+  return (
+    <aside className="cart-summary-card" aria-label="ملخص الطلب">
+      <span className="summary-label">عنوان</span>
+      <h2>ملخص الطلب</h2>
+      <div className="cart-summary-divider" />
+      <SummaryRow icon={<PackageCheck />} label="عدد القطع" value={`${pieceCount}`} />
+      <SummaryRow icon={<Gem />} label="إجمالي الوزن" value={`${totalWeight.toFixed(1)} غرام`} />
+      <SummaryRow icon={<ShoppingBag />} label="السعر التقديري" value={formatPrice(total)} />
+      <SummaryRow icon={<Truck />} label="التوصيل" value="يحدد لاحقاً" />
+      <SummaryRow icon={<CreditCard />} label="الإجمالي" value={formatPrice(total)} highlight />
+      <p className="cart-summary-notice">السعر تقديري ويعتمد على الوزن النهائي وسعر الذهب يوم الشراء.</p>
+      <Link to="/checkout" className="cart-checkout-button">
+        متابعة الدفع التجريبي
+      </Link>
+      <Link to="/products" className="cart-continue-link">
+        متابعة التسوق
+      </Link>
+      <div className="secure-checkout-row">
+        <LockKeyhole />
+        <span>عملية دفع آمنة</span>
+      </div>
+    </aside>
+  )
+}
+
+function SummaryRow({
+  icon,
+  label,
+  value,
+  highlight = false,
+}: {
+  icon: ReactNode
+  label: string
+  value: string
+  highlight?: boolean
+}) {
+  return (
+    <div className={highlight ? 'cart-summary-row highlight' : 'cart-summary-row'}>
+      <span>{icon}</span>
+      <p>{label}</p>
+      <strong>{value}</strong>
+    </div>
+  )
+}
+
+function CartItemCard({
+  item,
+  onRemove,
+  onQuantity,
+  onToggleWishlist,
+  wishlist,
+}: {
+  item: CartItem
+  onRemove: (id: string) => void
+  onQuantity: (id: string, quantity: number) => void
+  onToggleWishlist: (productId: string) => void
+  wishlist: string[]
+}) {
+  const details = cartItemDetails(item)
+  const price = cartItemPrice(item)
+  const weight = cartItemWeight(item)
+  const isFavorite = details.productId ? wishlist.includes(details.productId) : false
+
+  return (
+    <motion.article
+      className="luxury-cart-item"
+      layout
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, x: 26 }}
+      whileHover={{ y: -3 }}
+    >
+      <Link to={details.product ? `/products/${details.product.slug}` : details.set ? '/sets' : '/build-your-set'} className="cart-item-image">
+        <img src={details.image} alt={details.title} />
+      </Link>
+      <div className="cart-item-info">
+        <span>{details.category}</span>
+        <h3>{details.title}</h3>
+        <div>
+          <b>ذهب عيار 21</b>
+          <b>{weight.toFixed(1)} غرام</b>
+        </div>
+        <strong>{formatPrice(price)}</strong>
+      </div>
+      <QuantitySelector value={item.quantity} onChange={(quantity) => onQuantity(item.id, quantity)} />
+      <CartActions
+        canFavorite={Boolean(details.productId)}
+        isFavorite={isFavorite}
+        onFavorite={() => details.productId ? onToggleWishlist(details.productId) : undefined}
+        onRemove={() => onRemove(item.id)}
+      />
+    </motion.article>
+  )
+}
+
+function QuantitySelector({ value, onChange }: { value: number; onChange: (quantity: number) => void }) {
+  return (
+    <div className="cart-quantity-selector" aria-label="تحديد الكمية">
+      <button onClick={() => onChange(value - 1)} aria-label="تقليل الكمية">
+        <Minus size={16} />
+      </button>
+      <span>{value}</span>
+      <button onClick={() => onChange(value + 1)} aria-label="زيادة الكمية">
+        <Plus size={16} />
+      </button>
+    </div>
+  )
+}
+
+function CartActions({
+  canFavorite,
+  isFavorite,
+  onFavorite,
+  onRemove,
+}: {
+  canFavorite: boolean
+  isFavorite: boolean
+  onFavorite: () => void | undefined
+  onRemove: () => void
+}) {
+  return (
+    <div className="cart-item-actions">
+      <button aria-label="تحريك القطعة" title="تحريك القطعة">
+        <GripVertical size={18} />
+      </button>
+      <button
+        aria-label={isFavorite ? 'إزالة من المفضلة' : 'أضف إلى المفضلة'}
+        title={isFavorite ? 'إزالة من المفضلة' : 'أضف إلى المفضلة'}
+        disabled={!canFavorite}
+        className={isFavorite ? 'active' : ''}
+        onClick={onFavorite}
+      >
+        <Heart size={18} />
+      </button>
+      <button aria-label="حذف من السلة" title="حذف من السلة" onClick={onRemove}>
+        <Trash2 size={18} />
+      </button>
+    </div>
+  )
+}
+
+function ContinueShoppingCard() {
+  return (
+    <section className="continue-shopping-card">
+      <ShoppingBag />
+      <h3>تسوق المزيد</h3>
+      <p>استعرض المزيد من المجموعات الفاخرة.</p>
+      <Link to="/products">عرض المنتجات</Link>
+    </section>
+  )
+}
+
+function CartFeatures() {
+  const features = [
+    [ShieldCheck, 'ضمان الجودة', 'فحص دقيق للعيار والوزن قبل التسليم.'],
+    [Truck, 'شحن آمن', 'تغليف فاخر يحافظ على القطعة أثناء التوصيل.'],
+    [Gem, 'ذهب عيار 21', 'قطع مختارة من ذهب عيار 21 بتفاصيل واضحة.'],
+    [RefreshCcw, 'استبدال واسترجاع', 'سياسة مرنة حسب حالة القطعة والطلب.'],
+    [LockKeyhole, 'دفع آمن', 'تجربة دفع منظمة ومحاكاة آمنة داخل العرض.'],
+  ] as const
+
+  return (
+    <section className="cart-features" aria-label="مميزات الطلب">
+      {features.map(([Icon, title, text]) => (
+        <article key={title}>
+          <Icon />
+          <h3>{title}</h3>
+          <p>{text}</p>
+        </article>
+      ))}
+    </section>
+  )
+}
+
+function EmptyCartState() {
+  return (
+    <section className="empty-cart-state">
+      <div><Gem /></div>
+      <h2>السلة فارغة</h2>
+      <p>لم تقم بإضافة أي قطعة بعد.</p>
+      <Link to="/products">استكشف المنتجات</Link>
+    </section>
+  )
 }
 
 function WishlistPage() {
@@ -1413,83 +1706,6 @@ function Toast() {
   return <AnimatePresence>{toast ? <motion.div className="toast" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} onAnimationComplete={() => window.setTimeout(clearToast, 1800)}>{toast}</motion.div> : null}</AnimatePresence>
 }
 
-function FloatingCustomSetTab() {
-  const [open, setOpen] = useState(false)
-  const { customSet, removeFromCustomSet } = useStore()
-  const items = customSet
-    .map((entry) => {
-      const product = products.find((item) => item.id === entry.productId)
-      return product ? { product, quantity: entry.quantity } : null
-    })
-    .filter(Boolean) as SelectedSetEntry[]
-  const pieceCount = items.reduce((sum, item) => sum + item.quantity, 0)
-  const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
-
-  useEffect(() => {
-    if (!items.length) setOpen(false)
-  }, [items.length])
-
-  if (!items.length) return null
-
-  return (
-    <div className="floating-custom-set">
-      <AnimatePresence>
-        {open ? (
-          <motion.section
-            className="floating-custom-set-panel"
-            initial={{ opacity: 0, y: -10, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.98 }}
-          >
-            <header>
-              <div>
-                <span>طقمك المخصص</span>
-                <strong>{pieceCount} قطع مضافة</strong>
-              </div>
-              <button className="icon-button" aria-label="إغلاق طقمك" onClick={() => setOpen(false)}>
-                <X />
-              </button>
-            </header>
-            <div className="floating-custom-set-items">
-              {items.map((item) => (
-                <article key={item.product.id}>
-                  <img src={item.product.images[0]} alt={item.product.name} />
-                  <div>
-                    <strong>{item.product.name}</strong>
-                    <span>{item.quantity} × {item.product.weight} غرام</span>
-                  </div>
-                  <button aria-label="حذف من الطقم" onClick={() => removeFromCustomSet(item.product.id)}>
-                    <Trash2 size={15} />
-                  </button>
-                </article>
-              ))}
-            </div>
-            <footer>
-              <span>الإجمالي التقديري</span>
-              <strong>{formatPrice(total)}</strong>
-              <Link to="/build-your-set" onClick={() => setOpen(false)}>عرض الطقم وتعديله</Link>
-            </footer>
-          </motion.section>
-        ) : null}
-      </AnimatePresence>
-      <motion.button
-        className="floating-custom-set-toggle"
-        onClick={() => setOpen((current) => !current)}
-        aria-expanded={open}
-        animate={{ scale: [1, 1.035, 1] }}
-        transition={{ duration: 0.28 }}
-      >
-        <PackageCheck />
-        <span>
-          <strong>طقمك</strong>
-          <small>{pieceCount} قطع</small>
-        </span>
-        <b>{formatPrice(total)}</b>
-      </motion.button>
-    </div>
-  )
-}
-
 function LuxuryChatWidget() {
   const [open, setOpen] = useState(false)
   const location = useLocation()
@@ -1584,7 +1800,6 @@ function App() {
         </Routes>
         <Footer />
         <Toast />
-        <FloatingCustomSetTab />
         <LuxuryChatWidget />
       </Router>
     </HelmetProvider>
