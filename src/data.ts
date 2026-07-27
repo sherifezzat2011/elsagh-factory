@@ -465,7 +465,7 @@ export const branches: Branch[] = [
     phone: '+973 17 224 911',
     whatsapp: '+973 39 224 911',
     hours: 'السبت إلى الخميس، 10 صباحاً - 10 مساءً',
-    image: 'https://images.unsplash.com/photo-1604014237800-1c9102c219da?auto=format&fit=crop&w=1200&q=88',
+    image: alsayeghImage('1000321217-1-600x800.jpg'),
   },
   {
     id: 'manama-souq',
@@ -475,7 +475,7 @@ export const branches: Branch[] = [
     phone: '+973 17 343 558',
     whatsapp: '+973 39 343 558',
     hours: 'يومياً، 9 صباحاً - 9 مساءً',
-    image: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?auto=format&fit=crop&w=1200&q=88',
+    image: alsayeghImage('1000321180-600x720.jpg'),
   },
   {
     id: 'riffa',
@@ -485,7 +485,7 @@ export const branches: Branch[] = [
     phone: '+973 17 827 211',
     whatsapp: '+973 39 827 211',
     hours: 'السبت إلى الخميس، 10 صباحاً - 9 مساءً',
-    image: 'https://images.unsplash.com/photo-1567721913486-6585f069b332?auto=format&fit=crop&w=1200&q=88',
+    image: alsayeghImage('1000320779-600x800.jpg'),
   },
 ]
 
