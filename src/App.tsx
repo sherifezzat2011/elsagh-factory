@@ -560,7 +560,15 @@ function ProductPage() {
           <PriceDisplay product={product} />
           <p className="muted">السعر يتغير حسب وزن القطعة وسعر الذهب.</p>
           <div className="detail-actions">
-            <button disabled={!product.stock} onClick={() => addToCart({ type: 'product', productId: product.id })}>أضف إلى السلة</button>
+            <button
+              className="icon-only-cart"
+              aria-label={product.stock ? 'أضف إلى السلة' : 'غير متوفر'}
+              title={product.stock ? 'أضف إلى السلة' : 'غير متوفر'}
+              disabled={!product.stock}
+              onClick={() => addToCart({ type: 'product', productId: product.id })}
+            >
+              <ShoppingBag size={20} />
+            </button>
             {product.canBeAddedToCustomSet ? <button className="secondary-button" onClick={() => addToCustomSet(product.id)}>اختر القطعة للطقم</button> : null}
             <a className="whatsapp" href={`https://wa.me/97339991122?text=${whatsappText}`} target="_blank" rel="noreferrer"><MessageCircle /> واتساب</a>
           </div>
@@ -592,9 +600,14 @@ function ProductPage() {
               <div>
                 <strong>{product.name}</strong>
                 <span>{product.weight} غرام · ذهب عيار {product.karat}</span>
-                <button disabled={!product.stock} onClick={() => addToCart({ type: 'product', productId: product.id })}>
-                  <ShoppingBag size={18} />
-                  أضف للسلة
+                <button
+                  className="icon-only-cart"
+                  aria-label={product.stock ? 'أضف للسلة' : 'غير متوفر'}
+                  title={product.stock ? 'أضف للسلة' : 'غير متوفر'}
+                  disabled={!product.stock}
+                  onClick={() => addToCart({ type: 'product', productId: product.id })}
+                >
+                  <ShoppingBag size={20} />
                 </button>
               </div>
             </motion.div>
