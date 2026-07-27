@@ -640,6 +640,11 @@ button,
   grid-template-columns: repeat(3, 1fr);
 }
 
+.sets-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+
 .set-card {
   display: grid;
   grid-template-columns: 220px 1fr;
@@ -1262,7 +1267,7 @@ button,
 }
 
 .set-card-premium {
-  grid-template-columns: minmax(190px, 42%) minmax(0, 1fr);
+  grid-template-columns: minmax(220px, 44%) minmax(0, 1fr);
   min-height: 0;
   align-items: start;
   border-radius: 16px;
@@ -1273,7 +1278,7 @@ button,
   position: relative;
   overflow: hidden;
   width: 100%;
-  height: clamp(300px, 34vw, 390px);
+  height: clamp(360px, 30vw, 430px);
   min-height: 0;
   align-self: start;
   background: var(--cream);
@@ -1313,8 +1318,8 @@ button,
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 14px;
-  padding: 20px;
+  gap: 11px;
+  padding: 18px;
 }
 
 .set-content-panel > div:first-child p {
@@ -1327,17 +1332,17 @@ button,
 .set-facts {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .set-facts span {
-  padding: 7px 11px;
+  padding: 6px 10px;
   border-radius: 999px;
   background: var(--ivory);
   color: var(--primary-dark);
   border: 1px solid var(--border);
   font-weight: 700;
-  font-size: 0.86rem;
+  font-size: 0.82rem;
 }
 
 .set-facts span:first-child {
@@ -1348,30 +1353,36 @@ button,
 
 .set-price {
   color: var(--gold-dark);
-  font-size: 1.45rem;
+  font-size: 1.38rem;
+}
+
+.set-pieces.clean-chips {
+  gap: 8px;
 }
 
 .clean-chips span {
   border-radius: 999px;
   background: #fffaf0;
   border: 1px solid rgba(200, 162, 74, 0.28);
+  padding: 5px 9px;
+  font-size: 0.8rem;
 }
 
 .set-actions {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   margin-top: auto;
 }
 
 .set-actions button {
   width: 100%;
-  min-height: 50px;
+  min-height: 45px;
   border-radius: 12px;
   box-shadow: none;
 }
 
 .set-actions .secondary-button {
-  min-height: 48px;
+  min-height: 43px;
   background: var(--ivory);
   color: var(--primary-dark);
   border: 1px solid var(--gold);
@@ -1379,7 +1390,8 @@ button,
 
 .set-actions small {
   color: var(--text-muted);
-  line-height: 1.6;
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 .set-drawer-backdrop {
