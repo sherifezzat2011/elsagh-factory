@@ -319,7 +319,6 @@ function ProductCard({ product }: { product: Product }) {
         <Link to={`/products/${product.slug}`} className="product-image-link" aria-label={`تفاصيل ${product.name}`}>
           <img src={product.images[0]} alt={product.name} onError={(event) => { event.currentTarget.src = asset.fallback }} />
         </Link>
-        <div className="badges">{product.badges?.map((badge) => <span key={badge}>{badge}</span>)}</div>
         <div className="product-quick-actions" aria-label="إجراءات سريعة">
           <button
             aria-label={isFavorite ? 'إزالة من المفضلة' : 'أضف إلى المفضلة'}
