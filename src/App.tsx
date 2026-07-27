@@ -1716,6 +1716,83 @@ function Toast() {
   return <AnimatePresence>{toast ? <motion.div className="toast" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} onAnimationComplete={() => window.setTimeout(clearToast, 1800)}>{toast}</motion.div> : null}</AnimatePresence>
 }
 
+function FloatingCustomSetTab() {
+  const [open, setOpen] = useState(false)
+  const { customSet, removeFromCustomSet } = useStore()
+  const items = customSet
+    .map((entry) => {
+      const product = products.find((item) => item.id === entry.productId)
+      return product ? { product, quantity: entry.quantity } : null
+    })
+    .filter(Boolean) as SelectedSetEntry[]
+  const pieceCount = items.reduce((sum, item) => sum + item.quantity, 0)
+  const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+
+  useEffect(() => {
+    if (!items.length) setOpen(false)
+  }, [items.length])
+
+  if (!items.length) return null
+
+  return (
+    <div className="floating-custom-set">
+      <AnimatePresence>
+        {open ? (
+          <motion.section
+            className="floating-custom-set-panel"
+            initial={{ opacity: 0, y: -10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+          >
+            <header>
+              <div>
+                <span>طقمك المخصص</span>
+                <strong>{pieceCount} قطع مضافة</strong>
+              </div>
+              <button className="icon-button" aria-label="إغلاق طقمك" onClick={() => setOpen(false)}>
+                <X />
+              </button>
+            </header>
+            <div className="floating-custom-set-items">
+              {items.map((item) => (
+                <article key={item.product.id}>
+                  <img src={item.product.images[0]} alt={item.product.name} />
+                  <div>
+                    <strong>{item.product.name}</strong>
+                    <span>{item.quantity} × {item.product.weight} غرام</span>
+                  </div>
+                  <button aria-label="حذف من الطقم" onClick={() => removeFromCustomSet(item.product.id)}>
+                    <Trash2 size={15} />
+                  </button>
+                </article>
+              ))}
+            </div>
+            <footer>
+              <span>الإجمالي التقديري</span>
+              <strong>{formatPrice(total)}</strong>
+              <Link to="/build-your-set" onClick={() => setOpen(false)}>عرض الطقم وتعديله</Link>
+            </footer>
+          </motion.section>
+        ) : null}
+      </AnimatePresence>
+      <motion.button
+        className="floating-custom-set-toggle"
+        onClick={() => setOpen((current) => !current)}
+        aria-expanded={open}
+        animate={{ scale: [1, 1.035, 1] }}
+        transition={{ duration: 0.28 }}
+      >
+        <PackageCheck />
+        <span>
+          <strong>طقمك</strong>
+          <small>{pieceCount} قطع</small>
+        </span>
+        <b>{formatPrice(total)}</b>
+      </motion.button>
+    </div>
+  )
+}
+
 function LuxuryChatWidget() {
   const [open, setOpen] = useState(false)
   const location = useLocation()
@@ -1810,6 +1887,7 @@ function App() {
         </Routes>
         <Footer />
         <Toast />
+        <FloatingCustomSetTab />
         <LuxuryChatWidget />
       </Router>
     </HelmetProvider>
