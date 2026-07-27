@@ -63,6 +63,26 @@ function updateWasteCalculation() {
 
 updateWasteCalculation();
 
+const sidebar = document.querySelector('[data-sidebar]');
+const sidebarToggle = document.querySelector('[data-sidebar-toggle]') ?? document.querySelector('.topbar-tools .menu-button');
+const sidebarClose = document.querySelector('[data-sidebar-close]');
+
+function setSidebar(open) {
+  document.body.classList.toggle('sidebar-open', open);
+  sidebar?.setAttribute('aria-hidden', open ? 'false' : 'true');
+}
+
+sidebarToggle?.addEventListener('click', (event) => {
+  event.stopPropagation();
+  setSidebar(!document.body.classList.contains('sidebar-open'));
+});
+
+sidebarClose?.addEventListener('click', () => setSidebar(false));
+
+sidebar?.querySelectorAll('a').forEach((link) => {
+  link.addEventListener('click', () => setSidebar(false));
+});
+
 const productDrawer = document.querySelector('[data-product-drawer]');
 const openProductDrawerButtons = document.querySelectorAll('[data-open-product-drawer]');
 const closeProductDrawerButtons = document.querySelectorAll('[data-close-product-drawer]');
@@ -122,6 +142,7 @@ document.addEventListener('keydown', (event) => {
     setProductDrawer(false);
     setCategoryDrawer(false);
     setManufacturingDrawer(false);
+    setSidebar(false);
     closeActionMenus();
   }
 });
