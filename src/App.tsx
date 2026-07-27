@@ -87,6 +87,7 @@ const pageMotion = {
 
 const routerBasename =
   import.meta.env.BASE_URL === '/' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '')
+const brandLogoPath = `${import.meta.env.BASE_URL}logo21-horizontal.png`
 
 function SEOHead({ title, description }: { title: string; description: string }) {
   return (
@@ -118,13 +119,8 @@ function PriceDisplay({ product }: { product: Product }) {
   )
 }
 
-function BrandEmblem() {
-  return (
-    <span className="brand-emblem" aria-hidden="true">
-      <Swords className="brand-swords" />
-      <Gem className="brand-gem" />
-    </span>
-  )
+function BrandLogo({ compact = false }: { compact?: boolean }) {
+  return <img className={compact ? 'brand-logo compact' : 'brand-logo'} src={brandLogoPath} alt="Al Sayegh" />
 }
 
 function Header() {
@@ -141,15 +137,9 @@ function Header() {
 
   return (
     <>
-      <header className="site-header">
-        <Link to="/" className="brand" aria-label="مصنع الصايغ للمجوهرات">
-          <span className="brand-mark">
-            <BrandEmblem />
-          </span>
-          <span>
-            <strong>مصنع الصايغ للمجوهرات</strong>
-            <small>Alsayegh Factory · Since 1783</small>
-          </span>
+        <header className="site-header">
+          <Link to="/" className="brand" aria-label="مصنع الصايغ للمجوهرات">
+          <BrandLogo />
         </Link>
         <nav className="desktop-nav" aria-label="التنقل الرئيسي">
           {navItems.map(([href, label]) => (
@@ -289,7 +279,7 @@ function Footer() {
     <footer className="footer">
       <div>
         <div className="brand footer-brand">
-          <span className="brand-mark"><BrandEmblem /></span>
+          <BrandLogo compact />
           <span><strong>مصنع الصايغ</strong><small>ذهب عيار 21 منذ 1783</small></span>
         </div>
         <p>متجر تجريبي عربي فاخر يعرض منتجات ومجموعات وأطقم الصايغ ببيانات قابلة للتعديل.</p>
@@ -1642,7 +1632,7 @@ function BranchesPage() {
       </section>
       <section className="branch-service-strip">
         <div className="branch-service-brand">
-          <BrandEmblem />
+          <BrandLogo compact />
           <span>مصنع الصايغ للمجوهرات</span>
           <small>Alsayegh Factory · Since 1783</small>
         </div>
