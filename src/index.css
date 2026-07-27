@@ -1269,7 +1269,7 @@ button,
 .set-card-premium {
   grid-template-columns: minmax(220px, 44%) minmax(0, 1fr);
   min-height: 0;
-  align-items: start;
+  align-items: stretch;
   border-radius: 16px;
   box-shadow: 0 18px 44px rgba(6, 44, 37, 0.08);
 }
@@ -1278,9 +1278,9 @@ button,
   position: relative;
   overflow: hidden;
   width: 100%;
-  height: clamp(360px, 30vw, 430px);
-  min-height: 0;
-  align-self: start;
+  height: 100%;
+  min-height: clamp(360px, 30vw, 430px);
+  align-self: stretch;
   background: var(--cream);
 }
 
