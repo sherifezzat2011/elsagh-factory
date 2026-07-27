@@ -1,0 +1,53 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "التقارير";
+}
+
+<section class="report-grid">
+    <article class="report-card"><span>مبيعات اليوم</span><strong>@Model.TodaySales.ToString("N0") د.ب</strong></article>
+    <article class="report-card"><span>المبيعات الشهرية</span><strong>@Model.Revenue.ToString("N0") د.ب</strong></article>
+    <article class="report-card"><span>استهلاك الذهب</span><strong>@Model.ManufacturingOrders.Sum(order => order.RawGoldWeight).ToString("N0") جرام</strong></article>
+    <article class="report-card"><span>تقرير الهالك</span><strong>@Model.CurrentWastePercentage.ToString("N2")%</strong></article>
+</section>
+
+<section class="dashboard-grid">
+    <article class="chart-card">
+        <div class="section-title"><h2>تقرير الربح</h2><span>هامش تجريبي</span></div>
+        <div class="ring-meter" style="--pct: 64"><strong>64%</strong><span>هامش الربح الإجمالي</span></div>
+    </article>
+    <article class="chart-card">
+        <div class="section-title"><h2>تقرير المخزون</h2><span>خام مقابل جاهز</span></div>
+        <div class="bar-chart compact">
+            <div style="--value: 78"><span>خام</span><b></b><strong>@Model.RawGoldWeight.ToString("N0") جرام</strong></div>
+            <div style="--value: 42"><span>جاهز</span><b></b><strong>@Model.FinishedProductsWeight.ToString("N0") جرام</strong></div>
+        </div>
+    </article>
+    <article class="chart-card wide">
+        <div class="section-title"><h2>أفضل المنتجات</h2><span>حسب قيمة البيع وإمكانات المخزون</span></div>
+        @foreach (var product in Model.Products.OrderByDescending(item => item.RetailPrice).Take(4))
+        {
+            <div class="mini-progress"><span>@product.Name</span><b style="width:@Math.Min(100, product.RetailPrice / 35)%"></b><strong>@product.RetailPrice.ToString("N0") د.ب</strong></div>
+        }
+    </article>
+</section>
+
+<section class="table-card">
+    <div class="section-title"><h2>تقرير التصنيع</h2><span>الهالك المتوقع مقابل الهالك الفعلي</span></div>
+    <table>
+        <thead><tr><th>الأمر</th><th>النوع</th><th>الخام</th><th>الهالك المتوقع</th><th>الهالك الفعلي</th><th>الفرق</th><th>الموظف</th></tr></thead>
+        <tbody>
+        @foreach (var order in Model.ManufacturingOrders)
+        {
+            <tr>
+                <td>@order.OrderNumber</td>
+                <td>@order.ManufacturingType</td>
+                <td>@order.RawGoldWeight.ToString("N0") جرام</td>
+                <td>@order.ExpectedWaste.ToString("N3") جرام</td>
+                <td>@order.ActualWaste.ToString("N3") جرام</td>
+                <td class="@(order.IsWasteExceeded ? "danger" : "success")">@order.WasteDifference.ToString("N3") جرام</td>
+                <td>@order.Employee</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>

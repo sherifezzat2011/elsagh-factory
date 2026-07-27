@@ -1,0 +1,21 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "الفروع";
+}
+
+<section class="branch-grid">
+    @foreach (var branch in Model.Branches)
+    {
+        <article class="branch-card">
+            <span>@branch.City</span>
+            <h2>@branch.Name</h2>
+            <p class="muted">مدير الفرع: @branch.Manager</p>
+            <div class="branch-metrics">
+                <strong>@branch.SalesToday.ToString("N0") د.ب<small>مبيعات اليوم</small></strong>
+                <strong>@branch.InventoryWeight.ToString("N0") جرام<small>وزن المخزون</small></strong>
+                <strong>@branch.StockItems<small>عدد القطع</small></strong>
+                <strong>@branch.Employees<small>عدد الموظفين</small></strong>
+            </div>
+        </article>
+    }
+</section>

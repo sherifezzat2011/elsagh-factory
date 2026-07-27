@@ -1,0 +1,34 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "مخزون الذهب الخام";
+}
+
+<section class="stats-grid">
+    <article class="stat-card"><span>الإجمالي المتاح</span><strong>@Model.RawGoldLots.Sum(lot => lot.AvailableWeight).ToString("N0") جرام</strong></article>
+    <article class="stat-card"><span>المحجوز</span><strong>@Model.RawGoldLots.Sum(lot => lot.ReservedWeight).ToString("N0") جرام</strong></article>
+    <article class="stat-card"><span>المحول</span><strong>@Model.RawGoldLots.Sum(lot => lot.TransferredWeight).ToString("N0") جرام</strong></article>
+    <article class="stat-card"><span>قيمة الشراء</span><strong>@Model.RawGoldLots.Sum(lot => lot.PurchasePrice).ToString("N0") د.ب</strong></article>
+</section>
+
+<section class="table-card">
+    <div class="section-title"><h2>دفعات الذهب الخام</h2><button type="button">شراء ذهب خام</button></div>
+    <table>
+        <thead><tr><th>الدفعة</th><th>الوزن</th><th>العيار</th><th>المورد</th><th>سعر الشراء</th><th>التاريخ</th><th>المتاح</th><th>المحجوز</th><th>المحول</th></tr></thead>
+        <tbody>
+        @foreach (var lot in Model.RawGoldLots)
+        {
+            <tr>
+                <td><strong>@lot.LotNumber</strong></td>
+                <td>@lot.Weight.ToString("N0") جرام</td>
+                <td><span class="pill">@lot.Purity</span></td>
+                <td>@lot.Supplier</td>
+                <td>@lot.PurchasePrice.ToString("N0") د.ب</td>
+                <td>@lot.PurchaseDate.ToString("yyyy/MM/dd")</td>
+                <td class="success">@lot.AvailableWeight.ToString("N0") جرام</td>
+                <td>@lot.ReservedWeight.ToString("N0") جرام</td>
+                <td>@lot.TransferredWeight.ToString("N0") جرام</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>

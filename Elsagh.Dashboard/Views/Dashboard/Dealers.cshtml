@@ -1,0 +1,25 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "الوكلاء والجملة";
+}
+
+<section class="table-card">
+    <div class="section-title"><h2>حسابات الوكلاء</h2><button type="button">إنشاء وكيل</button></div>
+    <table>
+        <thead><tr><th>الوكيل</th><th>الفئة</th><th>حد الائتمان</th><th>الرصيد</th><th>سجل المشتريات</th><th>نسبة الاستخدام</th></tr></thead>
+        <tbody>
+        @foreach (var dealer in Model.Dealers)
+        {
+            var usage = dealer.CreditLimit == 0 ? 0 : Math.Round(dealer.Balance / dealer.CreditLimit * 100);
+            <tr>
+                <td><strong>@dealer.Name</strong></td>
+                <td><span class="pill">@dealer.Tier</span></td>
+                <td>@dealer.CreditLimit.ToString("N0") د.ب</td>
+                <td>@dealer.Balance.ToString("N0") د.ب</td>
+                <td>@dealer.PurchaseHistory.ToString("N0") د.ب</td>
+                <td><span>@usage%</span><div class="progress"><b style="width:@usage%"></b></div></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>

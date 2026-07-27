@@ -1,0 +1,17 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "الموردون";
+}
+
+<section class="table-card">
+    <div class="section-title"><h2>دفتر الموردين</h2><button type="button">إضافة عملية شراء</button></div>
+    <table>
+        <thead><tr><th>المورد</th><th>المادة</th><th>المستحق</th><th>آخر عملية شراء</th><th>الحالة</th></tr></thead>
+        <tbody>
+        @foreach (var supplier in Model.Suppliers)
+        {
+            <tr><td><strong>@supplier.Name</strong></td><td>@supplier.Material</td><td>@supplier.Outstanding.ToString("N0") د.ب</td><td>@supplier.LastPurchase.ToString("yyyy/MM/dd")</td><td><span class="pill">نشط</span></td></tr>
+        }
+        </tbody>
+    </table>
+</section>

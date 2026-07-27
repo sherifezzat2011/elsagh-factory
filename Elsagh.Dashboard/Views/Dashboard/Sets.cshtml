@@ -1,0 +1,47 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "الأطقم";
+}
+
+<section class="content-grid">
+    <article class="table-card">
+        <div class="section-title"><h2>بناء الأطقم</h2><span>يدعم بيع الطقم كاملا أو بيع القطع منفصلة أو تخصيص الطقم</span></div>
+        <table>
+            <thead><tr><th>الطقم</th><th>القطع</th><th>الخصم</th><th>قواعد البيع</th><th>الإجمالي شامل الضريبة</th></tr></thead>
+            <tbody>
+            @foreach (var set in Model.Sets)
+            {
+                var products = Model.Products.Where(product => set.ProductIds.Contains(product.Id)).ToList();
+                var subtotal = products.Sum(product => product.RetailPrice);
+                var afterDiscount = subtotal - (subtotal * set.DiscountPercentage / 100);
+                <tr>
+                    <td><strong>@set.Name</strong><br /><span class="muted">@set.Description</span></td>
+                    <td>@string.Join("، ", products.Select(product => product.Name))</td>
+                    <td>@set.DiscountPercentage.ToString("N0")%</td>
+                    <td><span class="pill">طقم كامل</span> <span class="pill">قطع منفصلة</span> <span class="pill">قابل للتخصيص</span></td>
+                    <td><strong>@Money.Total(afterDiscount).ToString("N0") د.ب</strong></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </article>
+
+    <aside class="form-card">
+        <h2>إنشاء طقم</h2>
+        <form class="stack-form" asp-action="AddSet" method="post">
+            <label>اسم الطقم<input name="name" required /></label>
+            <label>الوصف<textarea name="description" required></textarea></label>
+            <label>نسبة الخصم<input name="discountPercentage" type="number" step="0.01" value="0" /></label>
+            <div>
+                <strong>اختيار القطع</strong>
+                <div class="checks">
+                    @foreach (var product in Model.Products.Where(item => item.CanBeAddedToCustomSet || item.ProductType != "طقم"))
+                    {
+                        <label><input type="checkbox" name="productIds" value="@product.Id" /> @product.Name <span class="muted">@product.RetailPrice.ToString("N0") د.ب</span></label>
+                    }
+                </div>
+            </div>
+            <button type="submit">إنشاء الطقم</button>
+        </form>
+    </aside>
+</section>

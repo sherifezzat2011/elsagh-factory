@@ -1,0 +1,35 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "مخزون الفروع";
+}
+
+<section class="content-grid">
+    <article class="table-card">
+        <div class="section-title"><h2>المخزون حسب الفرع</h2><button type="button">إنشاء تحويل</button></div>
+        <table>
+            <thead><tr><th>الفرع</th><th>الوزن</th><th>عدد القطع</th><th>مبيعات اليوم</th><th>صحة المخزون</th></tr></thead>
+            <tbody>
+            @foreach (var branch in Model.Branches)
+            {
+                <tr>
+                    <td><strong>@branch.Name</strong><br /><span class="muted">@branch.City</span></td>
+                    <td>@branch.InventoryWeight.ToString("N0") جرام</td>
+                    <td>@branch.StockItems</td>
+                    <td>@branch.SalesToday.ToString("N0") د.ب</td>
+                    <td><div class="progress"><b style="width:@Math.Min(100, branch.StockItems / 2)%"></b></div></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </article>
+    <aside class="form-card">
+        <h2>تحويل مخزون</h2>
+        <form class="stack-form">
+            <label>من الفرع<select>@foreach (var branch in Model.Branches){<option>@branch.Name</option>}</select></label>
+            <label>إلى الفرع<select>@foreach (var branch in Model.Branches){<option>@branch.Name</option>}</select></label>
+            <label>الرقم التسلسلي<select>@foreach (var item in Model.FinishedItems){<option>@item.SerialNumber</option>}</select></label>
+            <label>ملاحظات<textarea></textarea></label>
+            <button type="button">معاينة التحويل</button>
+        </form>
+    </aside>
+</section>

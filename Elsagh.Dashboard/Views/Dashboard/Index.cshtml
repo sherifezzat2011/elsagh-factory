@@ -1,0 +1,166 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "الرئيسية";
+}
+
+<section class="welcome-row">
+    <div>
+        <h1>مرحباً بك، أحمد الصايغ</h1>
+        <p>إدارة مصنع الصايغ للذهب والمجوهرات</p>
+    </div>
+</section>
+
+<section class="metric-grid">
+    <article class="metric-card green">
+        <span class="metric-icon">↗</span>
+        <div>
+            <p>إجمالي المبيعات اليوم</p>
+            <strong>1,250,000</strong>
+            <small>د.ب</small>
+            <em>↗ 12.5% عن أمس</em>
+        </div>
+    </article>
+    <article class="metric-card blue">
+        <span class="metric-icon">⌬</span>
+        <div>
+            <p>إجمالي الإنتاج اليوم</p>
+            <strong>325.250</strong>
+            <small>جرام</small>
+            <em>↗ 8.3% عن أمس</em>
+        </div>
+    </article>
+    <article class="metric-card amber">
+        <span class="metric-icon">▱</span>
+        <div>
+            <p>الذهب الخام المتوفر</p>
+            <strong>2,450.750</strong>
+            <small>جرام</small>
+            <em>↗ 5.6% عن أمس</em>
+        </div>
+    </article>
+    <article class="metric-card violet">
+        <span class="metric-icon">◇</span>
+        <div>
+            <p>إجمالي القطع في المخزون</p>
+            <strong>8,750</strong>
+            <small>قطعة</small>
+            <em>↗ 7.2% عن أمس</em>
+        </div>
+    </article>
+    <article class="metric-card sand">
+        <span class="metric-icon">◆</span>
+        <div>
+            <p>إجمالي الفروع</p>
+            <strong>6</strong>
+            <small>فروع</small>
+        </div>
+    </article>
+</section>
+
+<section class="main-dashboard-grid">
+    <article class="dashboard-panel sales-panel">
+        <div class="panel-head">
+            <select><option>آخر 7 أيام</option></select>
+            <h2>المبيعات خلال آخر 7 أيام</h2>
+        </div>
+        <div class="line-chart">
+            <span class="axis-label">د.ب</span>
+            <svg viewBox="0 0 640 230" role="img" aria-label="مخطط المبيعات">
+                <defs>
+                    <linearGradient id="areaGold" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#d59a1b" stop-opacity=".22" />
+                        <stop offset="100%" stop-color="#d59a1b" stop-opacity="0" />
+                    </linearGradient>
+                </defs>
+                <g class="grid-lines">
+                    <line x1="42" y1="32" x2="610" y2="32" />
+                    <line x1="42" y1="72" x2="610" y2="72" />
+                    <line x1="42" y1="112" x2="610" y2="112" />
+                    <line x1="42" y1="152" x2="610" y2="152" />
+                    <line x1="42" y1="192" x2="610" y2="192" />
+                </g>
+                <path class="chart-area" d="M62 172 L145 145 L230 141 L312 112 L395 104 L482 78 L572 58 L572 208 L62 208 Z" />
+                <path class="chart-line" d="M62 172 L145 145 L230 141 L312 112 L395 104 L482 78 L572 58" />
+                <g class="chart-dots">
+                    <circle cx="62" cy="172" r="4" /><circle cx="145" cy="145" r="4" /><circle cx="230" cy="141" r="4" />
+                    <circle cx="312" cy="112" r="4" /><circle cx="395" cy="104" r="4" /><circle cx="482" cy="78" r="4" /><circle cx="572" cy="58" r="4" />
+                </g>
+            </svg>
+            <div class="chart-labels"><span>20 يوليو</span><span>21 يوليو</span><span>22 يوليو</span><span>23 يوليو</span><span>24 يوليو</span><span>25 يوليو</span><span>26 يوليو</span></div>
+        </div>
+    </article>
+
+    <article class="dashboard-panel split-panel">
+        <div class="panel-head"><h2>توزيع المبيعات</h2></div>
+        <div class="donut-wrap">
+            <div class="donut"></div>
+            <div class="donut-legend">
+                <p><b class="gold-dot"></b><strong>65%</strong> جملة (وكلاء)<small>825,000 د.ب</small></p>
+                <p><b class="dark-dot"></b><strong>35%</strong> تجزئة<small>425,000 د.ب</small></p>
+            </div>
+        </div>
+    </article>
+
+    <article class="dashboard-panel tasks-panel">
+        <div class="panel-head"><h2>المهام والتنبيهات</h2></div>
+        <div class="task-list">
+            <div><time>10:30 ص</time><b class="red"></b><strong>انخفاض مخزون الذهب الخام</strong><span>فرع القاهرة</span></div>
+            <div><time>09:15 ص</time><b class="yellow"></b><strong>طلب شراء جديد قيد الانتظار</strong><span>رقم الطلب: PR-0258</span></div>
+            <div><time>08:45 ص</time><b class="green"></b><strong>انتهاء عملية تصنيع</strong><span>طلب رقم: MO-0145</span></div>
+            <div><time>أمس</time><b class="blue"></b><strong>دفعة جديدة جاهزة للتسليم</strong><span>فرع الإسكندرية</span></div>
+        </div>
+    </article>
+</section>
+
+<section class="tables-grid">
+    <article class="dashboard-panel">
+        <div class="panel-head"><h2>المخزون حسب الفرع</h2></div>
+        <table class="clean-table">
+            <thead><tr><th>الفرع</th><th>الذهب الخام (جرام)</th><th>المنتجات (قطعة)</th><th></th></tr></thead>
+            <tbody>
+                <tr><td>فرع القاهرة</td><td>850.250</td><td>3,250</td><td>›</td></tr>
+                <tr><td>فرع الإسكندرية</td><td>650.500</td><td>2,100</td><td>›</td></tr>
+                <tr><td>فرع طنطا</td><td>450.000</td><td>1,800</td><td>›</td></tr>
+                <tr><td>فرع أسيوط</td><td>300.000</td><td>1,200</td><td>›</td></tr>
+                <tr><td>فرع المنصورة</td><td>150.000</td><td>400</td><td>›</td></tr>
+                <tr><td>فرع أسوان</td><td>50.000</td><td>200</td><td>›</td></tr>
+            </tbody>
+        </table>
+    </article>
+
+    <article class="dashboard-panel">
+        <div class="panel-head"><h2>آخر عمليات التصنيع</h2></div>
+        <table class="clean-table">
+            <thead><tr><th>رقم الأمر</th><th>المنتج</th><th>الوزن (جرام)</th><th>الحالة</th></tr></thead>
+            <tbody>
+                <tr><td>MO-0148</td><td>سلسلة ذهب عيار 21</td><td>125.50</td><td><span class="status done">مكتمل</span></td></tr>
+                <tr><td>MO-0147</td><td>خاتم رجالي عيار 21</td><td>45.30</td><td><span class="status done">مكتمل</span></td></tr>
+                <tr><td>MO-0146</td><td>غوايش عيار 21</td><td>210.00</td><td><span class="status progress">قيد التنفيذ</span></td></tr>
+                <tr><td>MO-0145</td><td>دبل خطوبة عيار 18</td><td>85.20</td><td><span class="status progress">قيد التنفيذ</span></td></tr>
+                <tr><td>MO-0144</td><td>حلق ذهب عيار 21</td><td>32.10</td><td><span class="status pending">معلق</span></td></tr>
+            </tbody>
+        </table>
+    </article>
+
+    <article class="dashboard-panel">
+        <div class="panel-head"><h2>آخر المبيعات</h2></div>
+        <table class="clean-table">
+            <thead><tr><th>رقم الفاتورة</th><th>العميل</th><th>النوع</th><th>المبلغ</th></tr></thead>
+            <tbody>
+                <tr><td>INV-0256</td><td>عميل تجزئة</td><td>تجزئة</td><td>25,000 د.ب</td></tr>
+                <tr><td>INV-0255</td><td>وكيل - القاهرة</td><td>جملة</td><td>125,000 د.ب</td></tr>
+                <tr><td>INV-0254</td><td>عميل تجزئة</td><td>تجزئة</td><td>18,500 د.ب</td></tr>
+                <tr><td>INV-0253</td><td>وكيل - الإسكندرية</td><td>جملة</td><td>85,000 د.ب</td></tr>
+                <tr><td>INV-0252</td><td>عميل تجزئة</td><td>تجزئة</td><td>32,000 د.ب</td></tr>
+            </tbody>
+        </table>
+    </article>
+</section>
+
+<section class="summary-strip">
+    <article><span class="soft-icon amber">▱</span><div><p>إجمالي مشتريات الذهب الخام</p><strong>15,250.750</strong><small>جرام</small></div></article>
+    <article><span class="soft-icon red">⌁</span><div><p>إجمالي الهدر هذا الشهر</p><strong>853.250</strong><small>جرام · 6.25%</small></div></article>
+    <article><span class="soft-icon orange">⌬</span><div><p>متوسط نسبة الهدر</p><strong>6.80%</strong><small>منذ بداية الشهر</small></div></article>
+    <article><span class="soft-icon amber">▰</span><div><p>إجمالي قيمة المخزون</p><strong>12,850,000</strong><small>د.ب</small></div></article>
+    <article><span class="soft-icon green">↗</span><div><p>إجمالي الأرباح هذا الشهر</p><strong>2,450,000</strong><small>د.ب · 15.3% عن الشهر الماضي</small></div></article>
+</section>

@@ -1,0 +1,253 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "المنتجات";
+
+    var productRows = Model.Products.Concat(new[]
+    {
+        new Product { Id = 101, ArabicName = "سلسلة حب الإمارات", Name = "سلسلة ذهب عيار 21", Sku = "CHN-10029", SerialNumber = "GF-2026-000007", Purity = "21K", Weight = 16.40m, RetailPrice = 780m, WholesalePrice = 650m, DealerPrice = 700m, Stock = 0, PieceType = "سلسلة", CategoryId = 2, Collection = "مجموعة الإمارات", ImageUrl = "https://images.unsplash.com/photo-1599643477877-530eb83abc8e?auto=format&fit=crop&w=900&q=85", Description = "سلسلة ذهب ناعمة مناسبة للهدايا الرسمية والمناسبات.", Notes = "تحتاج مراجعة مخزون قبل البيع." },
+        new Product { Id = 102, ArabicName = "خاتم الماسة المتألقة", Name = "خاتم ذهب عيار 18 مرصع", Sku = "RNG-10030", SerialNumber = "GF-2026-000008", Purity = "18K", Weight = 25.10m, RetailPrice = 1150m, WholesalePrice = 980m, DealerPrice = 1050m, Stock = 2, PieceType = "خاتم", CategoryId = 4, Collection = "مجموعة الفخامة", ImageUrl = "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=900&q=85", Description = "خاتم فاخر بتشطيب مصقول ومناسب للطلبات الخاصة.", Notes = "مرتبط بأمر تصنيع مفتوح." },
+        new Product { Id = 103, ArabicName = "طقم دانة الخليج", Name = "طقم عروس كامل", Sku = "SET-10031", SerialNumber = "GF-2026-000009", Purity = "21K", Weight = 58.75m, RetailPrice = 3650m, WholesalePrice = 3250m, DealerPrice = 3400m, Stock = 4, PieceType = "طقم", CategoryId = 1, Collection = "مجموعة الدانة", ImageUrl = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=900&q=85", Description = "طقم كامل مخصص للعرائس مع إمكانية بيع القطع منفصلة.", Notes = "منتج مميز في الواجهة." },
+        new Product { Id = 104, ArabicName = "أقراط لؤلؤ المنامة", Name = "أقراط ذهب ولؤلؤ", Sku = "EAR-10032", SerialNumber = "GF-2026-000010", Purity = "21K", Weight = 7.20m, RetailPrice = 460m, WholesalePrice = 390m, DealerPrice = 420m, Stock = 8, PieceType = "أقراط", CategoryId = 5, Collection = "مجموعة المنامة", ImageUrl = "https://images.unsplash.com/photo-1635767798638-3e25273a8236?auto=format&fit=crop&w=900&q=85", Description = "أقراط خفيفة بتفاصيل بحرينية راقية.", Notes = "مناسبة للعروض الموسمية." }
+    }).ToList();
+    var totalProducts = 1245;
+    var weeklyProducts = 24;
+    var totalWeight = productRows.Sum(product => product.Weight);
+    var inventoryValue = productRows.Sum(product => product.RetailPrice * product.Stock);
+    var availableCount = productRows.Count(product => product.Stock > 2);
+    var lowStockCount = productRows.Count(product => product.Stock > 0 && product.Stock <= 2);
+    var outOfStockCount = productRows.Count(product => product.Stock == 0);
+}
+
+<section class="products-page products-page-compact">
+    <main class="products-main">
+        <div class="products-actions product-command-bar">
+            <button type="button">باركود</button>
+            <button type="button">QR</button>
+            <button type="button">طباعة ⎙</button>
+            <button type="button">تصدير ⇧</button>
+            <button type="button">استيراد ⇩</button>
+            <button type="button" class="gold-action" data-open-product-drawer><span>＋</span> منتج جديد</button>
+        </div>
+
+        <section class="product-kpi-grid">
+            <article>
+                <span class="kpi-icon">⌁</span>
+                <small>إجمالي المنتجات</small>
+                <strong>@totalProducts.ToString("N0")</strong>
+                <em>منتج</em>
+            </article>
+            <article>
+                <span class="kpi-icon">⚖</span>
+                <small>إجمالي الوزن</small>
+                <strong>@totalWeight.ToString("N3")</strong>
+                <em>جرام</em>
+            </article>
+            <article>
+                <span class="kpi-icon">◎</span>
+                <small>إجمالي قيمة المخزون</small>
+                <strong>@inventoryValue.ToString("N0")</strong>
+                <em>د.ب</em>
+            </article>
+            <article>
+                <span class="kpi-icon">↗</span>
+                <small>منتجات هذا الأسبوع</small>
+                <strong>@weeklyProducts</strong>
+                <em>منتج</em>
+            </article>
+        </section>
+
+        <section class="product-insight-row">
+            <article>
+                <small>جاهز للبيع</small>
+                <strong>@availableCount منتجات</strong>
+                <span>مخزون متاح في الفروع</span>
+            </article>
+            <article>
+                <small>قيد التصنيع</small>
+                <strong>@lowStockCount منتجات</strong>
+                <span>تحتاج متابعة مع المصنع</span>
+            </article>
+            <article>
+                <small>غير متوفر</small>
+                <strong>@outOfStockCount منتج</strong>
+                <span>أولوية إعادة تصنيع</span>
+            </article>
+            <article>
+                <small>الضريبة</small>
+                <strong>10%</strong>
+                <span>ثابتة على كل عمليات البيع</span>
+            </article>
+        </section>
+
+        <section class="products-card">
+            <div class="products-search-row">
+                <button type="button" class="mini-filter">فلتر ⌯</button>
+                <select><option>جميع الأعمدة</option><option>المنتج</option><option>السعر</option><option>المخزون</option></select>
+                <select><option>جميع التصنيفات</option>@foreach (var category in Model.Categories){<option>@category.Name</option>}</select>
+                <label class="products-search">
+                    <input placeholder="ابحث عن منتج بالاسم، الباركود، رقم تسلسلي..." />
+                    <span>⌕</span>
+                </label>
+            </div>
+
+            <div class="products-table-wrap">
+                <table class="products-table compact-product-table">
+                    <thead>
+                        <tr>
+                            <th>الصورة</th>
+                            <th>المنتج</th>
+                            <th>الرقم التسلسلي</th>
+                            <th>رمز المنتج</th>
+                            <th>العيار</th>
+                            <th>الوزن</th>
+                            <th>السعر</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var product in productRows)
+                    {
+                        var category = Model.Categories.FirstOrDefault(item => item.Id == product.CategoryId)?.Name ?? product.PieceType;
+                        var statusClass = product.Stock == 0 ? "out" : product.Stock <= 2 ? "reserved" : "active";
+                        var statusText = product.Stock == 0 ? "غير متوفر" : product.Stock <= 2 ? "قيد التصنيع" : "متوفر";
+                        <tr class="product-row" data-product-row>
+                            <td><img class="product-thumb" src="@product.ImageUrl" alt="@product.ArabicName" /></td>
+                            <td class="product-info">
+                                <strong>@product.ArabicName</strong>
+                                <small>@product.Name</small>
+                                <span>@product.PieceType - @category</span>
+                            </td>
+                            <td class="serial">@product.SerialNumber</td>
+                            <td>@product.Sku</td>
+                            <td>@product.Purity</td>
+                            <td>
+                                <b>@product.Weight.ToString("N2")</b>
+                                <small>جرام</small>
+                            </td>
+                            <td class="price-cell">
+                                <b>@product.RetailPrice.ToString("N0") د.ب</b>
+                                <span>جملة @product.WholesalePrice.ToString("N0")</span>
+                                <span>وكيل @product.DealerPrice.ToString("N0")</span>
+                            </td>
+                            <td><span class="product-status @statusClass">@statusText</span></td>
+                            <td>
+                                <div class="icon-actions">
+                                    <button type="button" class="action-menu-trigger" title="الإجراءات" data-action-menu-trigger>...</button>
+                                    <div class="action-menu" data-action-menu>
+                                        <button type="button">عرض التفاصيل</button>
+                                        <button type="button">تعديل المنتج</button>
+                                        <button type="button">نسخ المنتج</button>
+                                        <button type="button">طباعة QR</button>
+                                        <button type="button">إيقاف مؤقت</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="product-details-row">
+                            <td colspan="9">
+                                <div class="product-details">
+                                    <section>
+                                        <h3>تفاصيل المنتج</h3>
+                                        <p>@product.Description</p>
+                                        <small>@product.Notes</small>
+                                    </section>
+                                    <section>
+                                        <h3>بيانات التصنيع</h3>
+                                        <p>تكلفة التصنيع: @product.ManufacturingCost.ToString("N0") د.ب</p>
+                                        <p>الضريبة الثابتة: 10%</p>
+                                    </section>
+                                    <section>
+                                        <h3>المخزون</h3>
+                                        <p>@product.Stock قطعة متاحة داخل الفروع.</p>
+                                    </section>
+                                    <section>
+                                        <h3>الأكواد</h3>
+                                        <p>@product.Barcode · @product.QrCode</p>
+                                    </section>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <footer class="products-pagination">
+                <span>عرض 1 إلى @productRows.Count من @totalProducts منتج</span>
+                <div>
+                    <button type="button">‹</button>
+                    <button type="button" class="current">1</button>
+                    <button type="button">2</button>
+                    <button type="button">3</button>
+                    <button type="button">...</button>
+                    <button type="button">249</button>
+                    <button type="button">›</button>
+                </div>
+                <label class="page-size">
+                    <select><option>5 في الصفحة</option><option>10 في الصفحة</option><option>25 في الصفحة</option></select>
+                </label>
+            </footer>
+        </section>
+    </main>
+</section>
+
+<aside class="product-drawer" data-product-drawer aria-hidden="true">
+    <div class="drawer-backdrop" data-close-product-drawer></div>
+    <section class="drawer-panel">
+        <header>
+            <div>
+                <h2>إضافة منتج جديد</h2>
+                <p>أدخل بيانات المنتج على مراحل منظمة.</p>
+            </div>
+            <button type="button" data-close-product-drawer>×</button>
+        </header>
+
+        <div class="drawer-tabs">
+            <button type="button" class="active">المعلومات الأساسية</button>
+            <button type="button">بيانات الذهب</button>
+            <button type="button">التسعير</button>
+            <button type="button">المخزون</button>
+            <button type="button">الصور</button>
+            <button type="button">الأكواد</button>
+        </div>
+
+        <form class="drawer-form" asp-action="AddProduct" method="post">
+            <div class="drawer-grid">
+                <label>الاسم العربي<input name="ArabicName" required /></label>
+                <label>الاسم البديل<input name="EnglishName" required /></label>
+                <label>اسم العرض<input name="Name" required /></label>
+                <label>التصنيف<select name="CategoryId">@foreach (var category in Model.Categories){<option value="@category.Id">@category.Name</option>}</select></label>
+                <label>المجموعة<input name="Collection" placeholder="مجموعة الدانة" /></label>
+                <label>العيار<select name="Purity"><option>21K</option><option>18K</option><option>22K</option></select></label>
+                <label>الوزن<input name="Weight" type="number" step="0.01" required /></label>
+                <label>تكلفة التصنيع<input name="ManufacturingCost" type="number" step="0.01" /></label>
+                <label>سعر التجزئة<input name="RetailPrice" type="number" step="0.01" required /></label>
+                <label>سعر الجملة<input name="WholesalePrice" type="number" step="0.01" /></label>
+                <label>سعر الوكيل<input name="DealerPrice" type="number" step="0.01" /></label>
+                <label>الكمية المبدئية<input name="Stock" type="number" value="1" /></label>
+                <label class="wide">الوصف<textarea name="Description"></textarea></label>
+                <label class="wide">ملاحظات<textarea name="Notes"></textarea></label>
+            </div>
+
+            <div class="drawer-upload" data-upload-zone>
+                <input type="file" multiple accept="image/*" />
+                <strong>اسحب صور المنتج هنا</strong>
+                <span>رفع متعدد، معاينة، اختيار صورة رئيسية، وترتيب الصور.</span>
+                <div class="preview-strip" data-preview-strip></div>
+            </div>
+
+            <div class="codes-preview">
+                <span>SKU: GLD-10099</span>
+                <span>Barcode: 629100099</span>
+                <span>QR: QR-GF-2026-000099</span>
+                <span>Serial: GF-2026-000099</span>
+            </div>
+
+            <footer>
+                <button type="button" data-close-product-drawer>إلغاء</button>
+                <button type="submit" class="gold-action">حفظ المنتج</button>
+            </footer>
+        </form>
+    </section>
+</aside>

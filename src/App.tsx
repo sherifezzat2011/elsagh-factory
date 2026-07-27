@@ -329,11 +329,12 @@ function ProductCard({ product }: { product: Product }) {
           </button>
           <button
             className="quick-cart"
+            aria-label={product.stock ? 'أضف للسلة' : 'غير متوفر'}
+            title={product.stock ? 'أضف للسلة' : 'غير متوفر'}
             disabled={!product.stock}
             onClick={() => addToCart({ type: 'product', productId: product.id })}
           >
             <ShoppingBag size={18} />
-            {product.stock ? 'أضف للسلة' : 'غير متوفر'}
           </button>
         </div>
       </div>

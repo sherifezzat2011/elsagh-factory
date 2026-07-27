@@ -1,0 +1,27 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "الإعدادات";
+}
+
+<section class="content-grid">
+    <article class="form-card">
+        <h2>إعدادات النظام</h2>
+        <div class="setting-list">
+            <span>اتجاه الواجهة</span><strong>العربية من اليمين إلى اليسار</strong>
+            <span>الوضع البصري</span><strong>فاتح وداكن</strong>
+            <span>نسبة الضريبة</span><strong>10%</strong>
+            <span>نمط الرقم التسلسلي</span><strong>GF-YYYY-000001</strong>
+            <span>الباركود ورمز الاستجابة</span><strong>مفعلان</strong>
+            <span>رفع الصور</span><strong>معاينة بالسحب والإفلات</strong>
+        </div>
+    </article>
+    <article class="form-card">
+        <h2>قواعد الهالك</h2>
+        <div class="setting-list">
+            @foreach (var rule in Model.WasteRules)
+            {
+                <span>@rule.Name</span><strong>@rule.GramPerKg جرام / كجم</strong>
+            }
+        </div>
+    </article>
+</section>

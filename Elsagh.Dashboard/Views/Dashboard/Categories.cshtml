@@ -1,0 +1,217 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "التصنيفات";
+
+    var totalCategories = 36;
+    var activeCategories = Model.Categories.Count(category => category.IsActive);
+    var parentCategories = Model.Categories.Select(category => category.ParentCategory).Distinct().Count();
+    var visibleCategories = Model.Categories.Concat(new[]
+    {
+        new Category { Id = 101, ArabicName = "الأحجار الكريمة", EnglishName = "Gemstones", Name = "الأحجار الكريمة", Slug = "gemstones", ParentCategory = "المجوهرات", PieceType = "حجر", SeoTitle = "أحجار كريمة مختارة", SeoDescription = "زمرد وياقوت وألماس للقطع الخاصة", ImageUrl = "https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=900&q=85", Description = "تصنيف خاص بالأحجار المستخدمة في المنتجات الفاخرة.", IsActive = true },
+        new Category { Id = 102, ArabicName = "هدايا المناسبات", EnglishName = "Occasion Gifts", Name = "هدايا المناسبات", Slug = "occasion-gifts", ParentCategory = "الهدايا", PieceType = "هدية", SeoTitle = "هدايا ذهب للمناسبات", SeoDescription = "اختيارات جاهزة للأعياد والزواج والتخرج", ImageUrl = "https://images.unsplash.com/photo-1512163143273-bde0e3cc7407?auto=format&fit=crop&w=900&q=85", Description = "مجموعة منتجات جاهزة للتغليف والبيع السريع.", IsActive = true },
+        new Category { Id = 103, ArabicName = "السبائك", EnglishName = "Bullion", Name = "السبائك", Slug = "bullion", ParentCategory = "الذهب الخام", PieceType = "سبيكة", SeoTitle = "سبائك ذهب معتمدة", SeoDescription = "سبائك بأوزان وعيارات مختلفة", ImageUrl = "https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=900&q=85", Description = "تصنيف إداري للسبائك المتاحة للبيع أو التصنيع.", IsActive = false }
+    }).ToList();
+}
+
+<section class="products-page products-page-compact categories-page">
+    <main class="products-main">
+        <div class="products-actions product-command-bar">
+            <button type="button">تصدير ⇧</button>
+            <button type="button">استيراد ⇩</button>
+            <button type="button">طباعة ⎙</button>
+            <button type="button">ترتيب العرض</button>
+            <button type="button" class="gold-action" data-open-category-drawer><span>＋</span> تصنيف جديد</button>
+        </div>
+
+        <section class="product-kpi-grid">
+            <article>
+                <span class="kpi-icon">▣</span>
+                <small>إجمالي التصنيفات</small>
+                <strong>@totalCategories</strong>
+                <em>تصنيف</em>
+            </article>
+            <article>
+                <span class="kpi-icon">✓</span>
+                <small>تصنيفات مفعلة</small>
+                <strong>@activeCategories</strong>
+                <em>تظهر على الموقع</em>
+            </article>
+            <article>
+                <span class="kpi-icon">⌘</span>
+                <small>تصنيفات رئيسية</small>
+                <strong>@parentCategories</strong>
+                <em>مستوى رئيسي</em>
+            </article>
+            <article>
+                <span class="kpi-icon">↗</span>
+                <small>تحسين الظهور</small>
+                <strong>92%</strong>
+                <em>بيانات مكتملة</em>
+            </article>
+        </section>
+
+        <section class="product-insight-row">
+            <article>
+                <small>الأكثر استخدامًا</small>
+                <strong>الأطقم</strong>
+                <span>مرتبطة بمنتجات العرائس</span>
+            </article>
+            <article>
+                <small>تحتاج صور</small>
+                <strong>3 تصنيفات</strong>
+                <span>لتحسين عرض الموقع</span>
+            </article>
+            <article>
+                <small>روابط SEO</small>
+                <strong>مكتملة</strong>
+                <span>لكل التصنيفات الأساسية</span>
+            </article>
+            <article>
+                <small>حالة النشر</small>
+                <strong>جاهزة</strong>
+                <span>للموقع ولوحة التحكم</span>
+            </article>
+        </section>
+
+        <section class="products-card">
+            <div class="products-search-row category-search-row">
+                <button type="button" class="mini-filter">فلتر ⌯</button>
+                <select><option>كل الحالات</option><option>مفعل</option><option>موقوف</option></select>
+                <select><option>كل التصنيفات الرئيسية</option><option>المجوهرات</option><option>الزفاف</option><option>الهدايا</option></select>
+                <label class="products-search">
+                    <input placeholder="ابحث باسم التصنيف، الرابط المختصر، أو نوع القطعة..." />
+                    <span>⌕</span>
+                </label>
+            </div>
+
+            <div class="products-table-wrap">
+                <table class="products-table compact-product-table compact-category-table">
+                    <thead>
+                        <tr>
+                            <th>الصورة</th>
+                            <th>التصنيف</th>
+                            <th>الرابط المختصر</th>
+                            <th>التصنيف الرئيسي</th>
+                            <th>نوع القطعة</th>
+                            <th>بيانات الظهور</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var category in visibleCategories)
+                    {
+                        <tr class="product-row category-row" data-product-row>
+                            <td><img class="product-thumb" src="@category.ImageUrl" alt="@category.ArabicName" /></td>
+                            <td class="product-info">
+                                <strong>@category.ArabicName</strong>
+                                <small>@category.EnglishName</small>
+                                <span>@category.Description</span>
+                            </td>
+                            <td class="serial">@category.Slug</td>
+                            <td>@category.ParentCategory</td>
+                            <td>@category.PieceType</td>
+                            <td class="price-cell">
+                                <b>@category.SeoTitle</b>
+                                <span>@category.SeoDescription</span>
+                            </td>
+                            <td><span class="product-status @(category.IsActive ? "active" : "out")">@(category.IsActive ? "مفعل" : "موقوف")</span></td>
+                            <td>
+                                <div class="icon-actions">
+                                    <button type="button" class="action-menu-trigger" title="الإجراءات" data-action-menu-trigger>...</button>
+                                    <div class="action-menu" data-action-menu>
+                                        <button type="button">عرض التصنيف</button>
+                                        <button type="button">تعديل البيانات</button>
+                                        <button type="button">نسخ التصنيف</button>
+                                        <button type="button">إدارة SEO</button>
+                                        <button type="button">إيقاف مؤقت</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="product-details-row">
+                            <td colspan="8">
+                                <div class="product-details">
+                                    <section>
+                                        <h3>وصف التصنيف</h3>
+                                        <p>@category.Description</p>
+                                    </section>
+                                    <section>
+                                        <h3>بيانات الموقع</h3>
+                                        <p>الرابط: /@category.Slug</p>
+                                        <p>العنوان: @category.SeoTitle</p>
+                                    </section>
+                                    <section>
+                                        <h3>الارتباطات</h3>
+                                        <p>مرتبط بنوع القطعة: @category.PieceType</p>
+                                        <p>داخل: @category.ParentCategory</p>
+                                    </section>
+                                    <section>
+                                        <h3>الحالة</h3>
+                                        <p>@(category.IsActive ? "ظاهر في الموقع ولوحة التحكم." : "موقوف مؤقتًا ولا يظهر للعملاء.")</p>
+                                    </section>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <footer class="products-pagination">
+                <span>عرض 1 إلى @visibleCategories.Count من @totalCategories تصنيف</span>
+                <div>
+                    <button type="button">‹</button>
+                    <button type="button" class="current">1</button>
+                    <button type="button">2</button>
+                    <button type="button">3</button>
+                    <button type="button">›</button>
+                </div>
+                <label class="page-size">
+                    <select><option>10 في الصفحة</option><option>25 في الصفحة</option><option>50 في الصفحة</option></select>
+                </label>
+            </footer>
+        </section>
+    </main>
+</section>
+
+<aside class="product-drawer category-drawer" data-category-drawer aria-hidden="true">
+    <div class="drawer-backdrop" data-close-category-drawer></div>
+    <section class="drawer-panel">
+        <header>
+            <div>
+                <h2>إنشاء تصنيف جديد</h2>
+                <p>أضف بيانات التصنيف كما ستظهر في الموقع ولوحة التحكم.</p>
+            </div>
+            <button type="button" data-close-category-drawer>×</button>
+        </header>
+
+        <div class="drawer-tabs">
+            <button type="button" class="active">البيانات الأساسية</button>
+            <button type="button">الصورة</button>
+            <button type="button">تحسين الظهور</button>
+            <button type="button">الحالة</button>
+        </div>
+
+        <form class="drawer-form" asp-action="AddCategory" method="post">
+            <div class="drawer-grid">
+                <label>الاسم العربي<input name="ArabicName" required /></label>
+                <label>الاسم البديل<input name="EnglishName" required /></label>
+                <label>اسم العرض<input name="Name" required /></label>
+                <label>التصنيف الرئيسي<input name="ParentCategory" placeholder="المجوهرات" /></label>
+                <label>نوع القطعة<input name="PieceType" placeholder="طقم، خاتم، قلادة" /></label>
+                <label>الرابط المختصر<input name="Slug" placeholder="new-category" /></label>
+                <label class="wide">صورة التصنيف<input name="ImageUrl" value="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=900&q=85" /></label>
+                <label class="wide">وصف التصنيف<textarea name="Description" required></textarea></label>
+                <label>عنوان الظهور<input name="SeoTitle" /></label>
+                <label>وصف الظهور<input name="SeoDescription" /></label>
+                <label class="toggle-line wide"><input name="IsActive" type="checkbox" value="true" checked /> مفعل ويظهر في الموقع</label>
+            </div>
+
+            <footer>
+                <button type="button" data-close-category-drawer>إلغاء</button>
+                <button type="submit" class="gold-action">حفظ التصنيف</button>
+            </footer>
+        </form>
+    </section>
+</aside>

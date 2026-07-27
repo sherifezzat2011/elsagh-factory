@@ -1,0 +1,17 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "العملاء";
+}
+
+<section class="table-card">
+    <div class="section-title"><h2>أرصدة العملاء</h2><button type="button">إضافة عميل</button></div>
+    <table>
+        <thead><tr><th>الاسم</th><th>الشريحة</th><th>الرصيد</th><th>إجمالي التعاملات</th><th>الإجراء التالي</th></tr></thead>
+        <tbody>
+        @foreach (var customer in Model.Customers)
+        {
+            <tr><td><strong>@customer.Name</strong></td><td><span class="pill">@customer.Segment</span></td><td>@customer.Balance.ToString("N0") د.ب</td><td>@customer.LifetimeValue.ToString("N0") د.ب</td><td><button type="button">فتح الملف</button></td></tr>
+        }
+        </tbody>
+    </table>
+</section>

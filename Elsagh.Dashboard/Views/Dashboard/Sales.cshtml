@@ -1,0 +1,32 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "المبيعات";
+    var channels = Model.Orders.GroupBy(order => order.Channel).Select(group => new { Channel = group.Key, Total = group.Sum(order => order.Total) }).ToList();
+}
+
+<section class="stats-grid">
+    <article class="stat-card"><span>مبيعات التجزئة</span><strong>@Model.Orders.Where(order => order.Channel == "تجزئة").Sum(order => order.Total).ToString("N0") د.ب</strong></article>
+    <article class="stat-card"><span>مبيعات الجملة</span><strong>@Model.Orders.Where(order => order.Channel == "جملة").Sum(order => order.Total).ToString("N0") د.ب</strong></article>
+    <article class="stat-card"><span>مبيعات الوكلاء</span><strong>@Model.Orders.Where(order => order.Channel == "وكيل").Sum(order => order.Total).ToString("N0") د.ب</strong></article>
+    <article class="stat-card"><span>الضريبة</span><strong>@Model.Tax.ToString("N0") د.ب</strong></article>
+</section>
+<section class="dashboard-grid">
+    <article class="chart-card wide">
+        <div class="section-title"><h2>الجملة مقابل التجزئة</h2><span>توزيع قنوات الفواتير</span></div>
+        <div class="bar-chart">
+            @foreach (var item in channels)
+            {
+                <div style="--value:@Math.Min(95, item.Total / 60)"><span>@item.Channel</span><b></b><strong>@item.Total.ToString("N0")</strong></div>
+            }
+        </div>
+    </article>
+    <article class="form-card">
+        <h2>خيارات الفواتير</h2>
+        <div class="setting-list">
+            <span>المرتجعات</span><strong>مفعلة</strong>
+            <span>الأقساط</span><strong>مفعلة</strong>
+            <span>الخصومات</span><strong>تحتاج إلى اعتماد</strong>
+            <span>رصيد العميل</span><strong>يتم تتبعه</strong>
+        </div>
+    </article>
+</section>

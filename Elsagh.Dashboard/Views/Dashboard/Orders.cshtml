@@ -1,0 +1,26 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "الطلبات";
+}
+
+<section class="table-card">
+    <div class="section-title"><h2>إدارة الطلبات</h2><button type="button">إنشاء طلب</button></div>
+    <table>
+        <thead><tr><th>الطلب</th><th>العميل</th><th>القناة</th><th>الحالة</th><th>طريقة الدفع</th><th>قبل الضريبة</th><th>ضريبة 10%</th><th>الإجمالي</th></tr></thead>
+        <tbody>
+        @foreach (var order in Model.Orders)
+        {
+            <tr>
+                <td>#@order.Id<br /><span class="muted">@order.CreatedAt.ToString("yyyy/MM/dd")</span></td>
+                <td>@order.CustomerName</td>
+                <td><span class="pill">@order.Channel</span></td>
+                <td>@order.Status</td>
+                <td>@order.PaymentMethod</td>
+                <td>@order.Subtotal.ToString("N0") د.ب</td>
+                <td>@order.Tax.ToString("N0") د.ب</td>
+                <td><strong>@order.Total.ToString("N0") د.ب</strong></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>

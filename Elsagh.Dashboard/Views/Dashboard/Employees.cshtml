@@ -1,0 +1,47 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "الموظفون";
+}
+
+<section class="content-grid">
+    <article class="table-card">
+        <div class="section-title"><h2>إنتاجية الموظفين</h2><span>المبيعات، الإنتاج، ونسبة الهالك</span></div>
+        <table>
+            <thead><tr><th>الموظف</th><th>الدور</th><th>الفرع</th><th>هدف المبيعات</th><th>وزن الإنتاج</th><th>الهالك</th><th>الأداء</th></tr></thead>
+            <tbody>
+            @foreach (var employee in Model.Employees)
+            {
+                var percent = employee.MonthlyTarget == 0 ? 0 : Math.Round(employee.CurrentSales / employee.MonthlyTarget * 100);
+                <tr>
+                    <td><strong>@employee.Name</strong></td>
+                    <td>@employee.Role</td>
+                    <td>@employee.Branch</td>
+                    <td>@employee.MonthlyTarget.ToString("N0") د.ب<br /><span class="muted">@employee.CurrentSales.ToString("N0") محقق</span></td>
+                    <td>@employee.ProducedWeight.ToString("N1") جرام</td>
+                    <td class="@(employee.WastePercentage > 0.7m ? "danger" : "success")">@employee.WastePercentage.ToString("N2")%</td>
+                    <td><span>@percent%</span><div class="progress"><b style="width:@Math.Min(100, percent)%"></b></div></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </article>
+
+    <aside class="form-card">
+        <h2>إضافة موظف</h2>
+        <form class="stack-form" asp-action="AddEmployee" method="post">
+            <label>الاسم<input name="Name" required /></label>
+            <label>الدور الوظيفي<input name="Role" required /></label>
+            <label>الفرع<input name="Branch" required /></label>
+            <div class="field-row">
+                <label>الهدف الشهري<input name="MonthlyTarget" type="number" step="0.01" required /></label>
+                <label>المبيعات الحالية<input name="CurrentSales" type="number" step="0.01" required /></label>
+            </div>
+            <div class="field-row">
+                <label>وزن الإنتاج<input name="ProducedWeight" type="number" step="0.01" /></label>
+                <label>نسبة الهالك<input name="WastePercentage" type="number" step="0.01" /></label>
+            </div>
+            <label class="toggle-line"><input name="IsActive" type="checkbox" value="true" checked /> نشط</label>
+            <button type="submit">إضافة الموظف</button>
+        </form>
+    </aside>
+</section>

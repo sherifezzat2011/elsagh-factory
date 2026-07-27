@@ -1,0 +1,229 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "التصنيع";
+
+    var manufacturingRows = Model.ManufacturingOrders.Concat(new[]
+    {
+        new ManufacturingOrder { Id = 101, OrderNumber = "MO-2026-0004", Employee = "مريم الصايغ", Branch = "المصنع", RawGoldWeight = 620m, ActualFinishedWeight = 615.2m, ManufacturingType = "تطعيم أحجار", Status = "قيد التصنيع", CreatedDate = DateTime.Today.AddDays(-1), Notes = "طقم خاص لعميل فرع السيف.", WasteRule = Model.WasteRules[2] },
+        new ManufacturingOrder { Id = 102, OrderNumber = "MO-2026-0005", Employee = "عبدالله العلوي", Branch = "المصنع", RawGoldWeight = 380m, ActualFinishedWeight = 377.9m, ManufacturingType = "نقش يدوي", Status = "فحص الجودة", CreatedDate = DateTime.Today, Notes = "مراجعة نهائية قبل التحويل للمخزون.", WasteRule = Model.WasteRules[1] },
+        new ManufacturingOrder { Id = 103, OrderNumber = "MO-2026-0006", Employee = "فاطمة راشد", Branch = "فرع المحرق", RawGoldWeight = 240m, ActualFinishedWeight = 238.8m, ManufacturingType = "تصنيع سريع", Status = "مكتمل", CreatedDate = DateTime.Today.AddDays(-2), FinishedDate = DateTime.Today.AddDays(-1), Notes = "تم التسليم للفرع.", WasteRule = Model.WasteRules[0] }
+    }).ToList();
+
+    var totalRaw = manufacturingRows.Sum(order => order.RawGoldWeight);
+    var totalActualWaste = manufacturingRows.Sum(order => order.ActualWaste);
+    var exceededCount = manufacturingRows.Count(order => order.IsWasteExceeded);
+    var inProgressCount = manufacturingRows.Count(order => order.Status.Contains("قيد") || order.Status.Contains("فحص"));
+}
+
+<section class="products-page products-page-compact manufacturing-page">
+    <main class="products-main">
+        <div class="products-actions product-command-bar">
+            <button type="button">تصدير ⇧</button>
+            <button type="button">طباعة ⎙</button>
+            <button type="button">تقرير الهالك</button>
+            <button type="button">تحويل للمخزون</button>
+            <button type="button" class="gold-action" data-open-manufacturing-drawer><span>＋</span> أمر تصنيع</button>
+        </div>
+
+        <section class="product-kpi-grid">
+            <article>
+                <span class="kpi-icon">⚒</span>
+                <small>أوامر التصنيع</small>
+                <strong>@manufacturingRows.Count</strong>
+                <em>أمر نشط</em>
+            </article>
+            <article>
+                <span class="kpi-icon">⚖</span>
+                <small>الذهب المسلم</small>
+                <strong>@totalRaw.ToString("N1")</strong>
+                <em>جرام</em>
+            </article>
+            <article>
+                <span class="kpi-icon">⌁</span>
+                <small>إجمالي الهالك الفعلي</small>
+                <strong>@totalActualWaste.ToString("N3")</strong>
+                <em>جرام</em>
+            </article>
+            <article>
+                <span class="kpi-icon">!</span>
+                <small>تجاوزات الهالك</small>
+                <strong>@exceededCount</strong>
+                <em>تحتاج مراجعة</em>
+            </article>
+        </section>
+
+        <section class="manufacturing-steps">
+            @foreach (var step in new[] { "شراء الخام", "استلام المخزن", "تسليم الموظف", "التصنيع", "فحص الجودة", "احتساب الهالك", "تحديث المخزون" })
+            {
+                <article>
+                    <span></span>
+                    <strong>@step</strong>
+                </article>
+            }
+        </section>
+
+        <section class="product-insight-row">
+            <article>
+                <small>قيد التنفيذ</small>
+                <strong>@inProgressCount أوامر</strong>
+                <span>داخل المصنع والجودة</span>
+            </article>
+            <article>
+                <small>قاعدة الهالك</small>
+                <strong>6 - 10 جم/كجم</strong>
+                <span>حسب نوع التصنيع</span>
+            </article>
+            <article>
+                <small>أعلى تكلفة</small>
+                <strong>تطعيم أحجار</strong>
+                <span>يحتاج متابعة دقيقة</span>
+            </article>
+            <article>
+                <small>آخر تحديث</small>
+                <strong>اليوم</strong>
+                <span>جاهز للتقارير</span>
+            </article>
+        </section>
+
+        <section class="products-card">
+            <div class="products-search-row manufacturing-search-row">
+                <button type="button" class="mini-filter">فلتر ⌯</button>
+                <select><option>كل الحالات</option><option>قيد التصنيع</option><option>فحص الجودة</option><option>مكتمل</option></select>
+                <select><option>كل قواعد الهالك</option>@foreach (var rule in Model.WasteRules){<option>@rule.Name</option>}</select>
+                <label class="products-search">
+                    <input placeholder="ابحث برقم أمر التصنيع، الموظف، الفرع، أو نوع التصنيع..." />
+                    <span>⌕</span>
+                </label>
+            </div>
+
+            <div class="products-table-wrap">
+                <table class="products-table compact-product-table compact-manufacturing-table">
+                    <thead>
+                        <tr>
+                            <th>الأمر</th>
+                            <th>الموظف</th>
+                            <th>الخام</th>
+                            <th>القاعدة</th>
+                            <th>الهالك المتوقع</th>
+                            <th>الهالك الفعلي</th>
+                            <th>الفرق</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var order in manufacturingRows)
+                    {
+                        var statusClass = order.Status.Contains("مكتمل") ? "active" : order.Status.Contains("فحص") ? "reserved" : "progress";
+                        <tr class="product-row manufacturing-row" data-product-row>
+                            <td class="product-info">
+                                <strong>@order.OrderNumber</strong>
+                                <small>@order.ManufacturingType</small>
+                                <span>@order.CreatedDate.ToString("dd MMM yyyy")</span>
+                            </td>
+                            <td>@order.Employee<br /><small>@order.Branch</small></td>
+                            <td><b>@order.RawGoldWeight.ToString("N1")</b><small>جرام</small></td>
+                            <td class="price-cell"><b>@order.WasteRule.Name</b><span>@order.WasteRule.GramPerKg جم / كجم</span></td>
+                            <td>@order.ExpectedWaste.ToString("N3") جم</td>
+                            <td>@order.ActualWaste.ToString("N3") جم</td>
+                            <td class="@(order.IsWasteExceeded ? "danger" : "success")">@order.WasteDifference.ToString("N3") جم</td>
+                            <td><span class="product-status @statusClass">@order.Status</span></td>
+                            <td>
+                                <div class="icon-actions">
+                                    <button type="button" class="action-menu-trigger" title="الإجراءات" data-action-menu-trigger>...</button>
+                                    <div class="action-menu" data-action-menu>
+                                        <button type="button">عرض الأمر</button>
+                                        <button type="button">تعديل الحالة</button>
+                                        <button type="button">تسجيل الهالك</button>
+                                        <button type="button">تحويل للمخزون</button>
+                                        <button type="button">طباعة التقرير</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="product-details-row">
+                            <td colspan="9">
+                                <div class="product-details">
+                                    <section>
+                                        <h3>ملاحظات الأمر</h3>
+                                        <p>@order.Notes</p>
+                                    </section>
+                                    <section>
+                                        <h3>حساب الهالك</h3>
+                                        <p>المعادلة: وزن الخام × معدل الهالك / 1000</p>
+                                        <p>المتوقع: @order.ExpectedWaste.ToString("N3") جم</p>
+                                    </section>
+                                    <section>
+                                        <h3>نتيجة الجودة</h3>
+                                        <p>@(order.IsWasteExceeded ? "يوجد تجاوز ويحتاج اعتماد المدير." : "ضمن النطاق المقبول.")</p>
+                                    </section>
+                                    <section>
+                                        <h3>التسليم</h3>
+                                        <p>@(order.FinishedDate.HasValue ? $"اكتمل في {order.FinishedDate.Value:dd MMM yyyy}" : "لم يكتمل بعد.")</p>
+                                    </section>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <footer class="products-pagination">
+                <span>عرض 1 إلى @manufacturingRows.Count من @manufacturingRows.Count أمر تصنيع</span>
+                <div>
+                    <button type="button">‹</button>
+                    <button type="button" class="current">1</button>
+                    <button type="button">›</button>
+                </div>
+                <label class="page-size">
+                    <select><option>10 في الصفحة</option><option>25 في الصفحة</option></select>
+                </label>
+            </footer>
+        </section>
+    </main>
+</section>
+
+<aside class="product-drawer manufacturing-drawer" data-manufacturing-drawer aria-hidden="true">
+    <div class="drawer-backdrop" data-close-manufacturing-drawer></div>
+    <section class="drawer-panel">
+        <header>
+            <div>
+                <h2>إنشاء أمر تصنيع</h2>
+                <p>سجل تسليم الذهب الخام واحسب الهالك المتوقع قبل بدء التصنيع.</p>
+            </div>
+            <button type="button" data-close-manufacturing-drawer>×</button>
+        </header>
+
+        <div class="drawer-tabs">
+            <button type="button" class="active">بيانات الأمر</button>
+            <button type="button">الذهب الخام</button>
+            <button type="button">الهالك</button>
+            <button type="button">الجودة</button>
+        </div>
+
+        <form class="drawer-form" asp-action="AddManufacturingOrder" method="post">
+            <div class="drawer-grid">
+                <label>الموظف<select name="Employee">@foreach (var employee in Model.Employees){<option>@employee.Name</option>}</select></label>
+                <label>الفرع<select name="Branch">@foreach (var branch in Model.Branches){<option>@branch.Name</option>}<option>المصنع</option></select></label>
+                <label>وزن الذهب الخام<input name="RawGoldWeight" type="number" step="0.001" value="1000" data-raw-weight /></label>
+                <label>وزن المنتج النهائي الفعلي<input name="ActualFinishedWeight" type="number" step="0.001" value="994" data-finished-weight /></label>
+                <label>قاعدة الهالك<select name="wasteRuleId" data-waste-rule>@foreach (var rule in Model.WasteRules){<option value="@rule.Id" data-rate="@rule.GramPerKg">@rule.Name - @rule.GramPerKg جم/كجم</option>}</select></label>
+                <label>نوع التصنيع<input name="ManufacturingType" value="تصنيع عادي" /></label>
+                <label>الحالة<select name="Status"><option>قيد التصنيع</option><option>فحص الجودة</option><option>مكتمل</option></select></label>
+                <label class="wide">ملاحظات<textarea name="Notes"></textarea></label>
+            </div>
+
+            <div class="calc-card drawer-calc-card">
+                <span>الهالك المتوقع</span><strong data-expected-waste>6.000 جرام</strong>
+                <span>الهالك الفعلي</span><strong data-actual-waste>6.000 جرام</strong>
+                <span>الفرق</span><strong data-waste-diff>0.000 جرام</strong>
+            </div>
+
+            <footer>
+                <button type="button" data-close-manufacturing-drawer>إلغاء</button>
+                <button type="submit" class="gold-action">حفظ أمر التصنيع</button>
+            </footer>
+        </form>
+    </section>
+</aside>

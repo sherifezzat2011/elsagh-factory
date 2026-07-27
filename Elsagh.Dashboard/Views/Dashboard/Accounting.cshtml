@@ -1,0 +1,19 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "المحاسبة";
+    var receivables = Model.Customers.Sum(customer => customer.Balance) + Model.Dealers.Sum(dealer => dealer.Balance);
+    var payables = Model.Suppliers.Sum(supplier => supplier.Outstanding);
+}
+
+<section class="stats-grid">
+    <article class="stat-card"><span>الإيرادات شاملة الضريبة</span><strong>@Model.Revenue.ToString("N0") د.ب</strong></article>
+    <article class="stat-card"><span>الضريبة المستحقة</span><strong>@Model.Tax.ToString("N0") د.ب</strong></article>
+    <article class="stat-card"><span>الذمم المدينة</span><strong>@receivables.ToString("N0") د.ب</strong></article>
+    <article class="stat-card"><span>الذمم الدائنة</span><strong>@payables.ToString("N0") د.ب</strong></article>
+</section>
+
+<section class="quick-grid">
+    <article class="panel"><h3>طرق الدفع</h3><p class="muted">نقدا، بطاقة، تحويل بنكي، أقساط، وائتمان للوكلاء.</p></article>
+    <article class="panel"><h3>المرتجعات</h3><p class="muted">يمكن لفاتورة المرتجع عكس المخزون والضريبة ورصيد العميل.</p></article>
+    <article class="panel"><h3>ملخص الربح</h3><p class="muted">يربط تقرير الربح بين سعر البيع، تكلفة التصنيع، تكلفة الذهب، الخصومات، والهالك.</p></article>
+</section>

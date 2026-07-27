@@ -1,0 +1,26 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "المشغولات الجاهزة";
+}
+
+<section class="table-card">
+    <div class="section-title"><h2>المشغولات ذات الأرقام التسلسلية</h2><span>لا يتكرر الرقم التسلسلي: GF-YYYY-000001</span></div>
+    <table>
+        <thead><tr><th>الصورة</th><th>الرقم التسلسلي</th><th>الأكواد</th><th>الوزن</th><th>الفرع</th><th>التصنيع</th><th>الحالة</th><th>تاريخ الإنشاء</th></tr></thead>
+        <tbody>
+        @foreach (var item in Model.FinishedItems)
+        {
+            <tr>
+                <td><img src="@item.ImageUrl" alt="@item.SerialNumber" /></td>
+                <td><strong class="mono">@item.SerialNumber</strong></td>
+                <td>@item.Barcode<br /><span class="muted">@item.QrCode</span></td>
+                <td>@item.Weight.ToString("N1") جرام<br /><span class="pill">@item.Purity</span></td>
+                <td>@item.Branch</td>
+                <td>@item.ManufacturingOrder<br /><span class="muted">@item.Employee</span></td>
+                <td><span class="pill">@item.Status</span></td>
+                <td>@item.CreatedDate.ToString("yyyy/MM/dd")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>
