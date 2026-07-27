@@ -130,6 +130,50 @@ h2,
   background: rgba(255, 255, 255, 0.06);
 }
 
+.brand-emblem {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+}
+
+.brand-emblem svg {
+  position: absolute;
+  stroke-width: 1.8;
+}
+
+.brand-swords {
+  width: 28px;
+  height: 28px;
+  color: rgba(223, 191, 112, 0.78);
+}
+
+.brand-gem {
+  width: 15px;
+  height: 15px;
+  color: var(--gold-light);
+  filter: drop-shadow(0 1px 2px rgba(3, 31, 26, 0.4));
+}
+
+.brand-mark .brand-emblem,
+.branch-service-brand .brand-emblem {
+  width: 28px;
+  height: 28px;
+}
+
+.brand-mark .brand-swords,
+.branch-service-brand .brand-swords {
+  width: 28px;
+  height: 28px;
+}
+
+.brand-mark .brand-gem,
+.branch-service-brand .brand-gem {
+  width: 15px;
+  height: 15px;
+}
+
 .brand small,
 .muted {
   color: var(--text-muted);
@@ -2579,6 +2623,56 @@ button,
     radial-gradient(circle, transparent 31%, var(--gold) 34%, var(--gold) 46%, transparent 49%) center / 18px 18px no-repeat;
 }
 
+.heritage-sigil-strip {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  width: min(980px, calc(100% - 56px));
+  margin: -18px auto 0;
+  padding: 14px 24px;
+  color: var(--primary-dark);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(200, 162, 74, 0.48);
+  border-radius: 999px;
+  box-shadow: 0 18px 44px rgba(6, 44, 37, 0.13);
+}
+
+.heritage-sigil-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  color: var(--gold);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.96) 0 45%, transparent 46%),
+    linear-gradient(135deg, rgba(4, 66, 53, 0.98), rgba(2, 42, 35, 0.98));
+  border: 1px solid rgba(200, 162, 74, 0.56);
+  border-radius: 999px;
+}
+
+.heritage-sigil-icon svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 1.8;
+}
+
+.heritage-sigil-strip strong {
+  display: block;
+  margin-bottom: 3px;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  color: var(--primary-dark);
+}
+
+.heritage-sigil-strip p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
 .leadership-stats {
   width: min(1180px, calc(100% - 84px));
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -3236,6 +3330,21 @@ button,
     height: 20px;
   }
 
+  .brand-mark .brand-emblem {
+    width: 22px;
+    height: 22px;
+  }
+
+  .brand-mark .brand-swords {
+    width: 22px;
+    height: 22px;
+  }
+
+  .brand-mark .brand-gem {
+    width: 12px;
+    height: 12px;
+  }
+
   .brand > span:last-child {
     min-width: 0;
     overflow: hidden;
@@ -3333,6 +3442,36 @@ button,
     min-width: 0;
     overflow-wrap: anywhere;
     word-break: normal;
+  }
+
+  .heritage-sigil-strip {
+    width: calc(100% - 32px);
+    max-width: calc(100% - 32px);
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 10px;
+    margin: -20px auto 16px;
+    padding: 16px;
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .heritage-sigil-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .heritage-sigil-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .heritage-sigil-strip strong {
+    font-size: 0.98rem;
+  }
+
+  .heritage-sigil-strip p {
+    font-size: 0.86rem;
   }
 
   .leadership-stats,

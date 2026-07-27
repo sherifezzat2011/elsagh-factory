@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { CheckCircle2 } from 'lucide-react'
+import { CheckCircle2, Swords } from 'lucide-react'
 import { executives, leadershipFactoryImage, type Executive } from '../../data/team'
 import { CoreValues } from './CoreValues'
 import { ExecutiveCard } from './ExecutiveCard'
@@ -33,6 +33,15 @@ export function LeadershipPage() {
   return (
     <motion.main className="leadership-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       <HeroLeadership />
+      <section className="heritage-sigil-strip" aria-label="رمز التراث">
+        <span className="heritage-sigil-icon">
+          <Swords aria-hidden="true" />
+        </span>
+        <div>
+          <strong>رمز السيوف والخناجر</strong>
+          <p>إشارة بصرية إلى الهيبة والحماية وتاريخ الحرفة البحرينية الممتد منذ 1783.</p>
+        </div>
+      </section>
       <LeadershipStats />
       <section className="leadership-section" id="executive-team">
         <LeadershipSectionHeading

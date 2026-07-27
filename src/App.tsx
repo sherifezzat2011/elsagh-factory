@@ -28,6 +28,7 @@ import {
   SlidersHorizontal,
   Sparkles,
   Star,
+  Swords,
   Trash2,
   UserRound,
   Navigation,
@@ -111,6 +112,15 @@ function PriceDisplay({ product }: { product: Product }) {
   )
 }
 
+function BrandEmblem() {
+  return (
+    <span className="brand-emblem" aria-hidden="true">
+      <Swords className="brand-swords" />
+      <Gem className="brand-gem" />
+    </span>
+  )
+}
+
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -128,7 +138,7 @@ function Header() {
       <header className="site-header">
         <Link to="/" className="brand" aria-label="مصنع الصايغ للمجوهرات">
           <span className="brand-mark">
-            <Gem size={24} />
+            <BrandEmblem />
           </span>
           <span>
             <strong>مصنع الصايغ للمجوهرات</strong>
@@ -273,7 +283,7 @@ function Footer() {
     <footer className="footer">
       <div>
         <div className="brand footer-brand">
-          <span className="brand-mark"><Gem /></span>
+          <span className="brand-mark"><BrandEmblem /></span>
           <span><strong>مصنع الصايغ</strong><small>ذهب عيار 21 منذ 1783</small></span>
         </div>
         <p>متجر تجريبي عربي فاخر يعرض منتجات ومجموعات وأطقم الصايغ ببيانات قابلة للتعديل.</p>
@@ -915,7 +925,7 @@ function BranchesPage() {
       </section>
       <section className="branch-service-strip">
         <div className="branch-service-brand">
-          <Gem />
+          <BrandEmblem />
           <span>مصنع الصايغ للمجوهرات</span>
           <small>Alsayegh Factory · Since 1783</small>
         </div>
