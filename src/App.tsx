@@ -319,22 +319,42 @@ function ProductCard({ product }: { product: Product }) {
   const isFavorite = wishlist.includes(product.id)
   return (
     <article className="product-card">
-      <Link to={`/products/${product.slug}`} className="product-image">
-        <img src={product.images[0]} alt={product.name} onError={(event) => { event.currentTarget.src = asset.fallback }} />
+      <div className="product-image">
+        <Link to={`/products/${product.slug}`} className="product-image-link" aria-label={`تفاصيل ${product.name}`}>
+          <img src={product.images[0]} alt={product.name} onError={(event) => { event.currentTarget.src = asset.fallback }} />
+        </Link>
         <div className="badges">{product.badges?.map((badge) => <span key={badge}>{badge}</span>)}</div>
-      </Link>
+        <div className="product-quick-actions" aria-label="إجراءات سريعة">
+          <button
+            aria-label={isFavorite ? 'إزالة من المفضلة' : 'أضف إلى المفضلة'}
+            className={isFavorite ? 'quick-fav active' : 'quick-fav'}
+            onClick={() => toggleWishlist(product.id)}
+          >
+            <Heart size={18} />
+          </button>
+          <button
+            className="quick-cart"
+            disabled={!product.stock}
+            onClick={() => addToCart({ type: 'product', productId: product.id })}
+          >
+            <ShoppingBag size={18} />
+            {product.stock ? 'أضف للسلة' : 'غير متوفر'}
+          </button>
+        </div>
+      </div>
       <div className="product-body">
         <p>{categories.find((category) => category.id === product.categoryId)?.name}</p>
         <h3>{product.name}</h3>
         <div className="meta"><span>{product.weight} غرام</span><span>ذهب عيار {product.karat}</span></div>
         <PriceDisplay product={product} />
         <div className="card-actions">
-          <button aria-label="أضف إلى المفضلة" className={isFavorite ? 'icon-button active' : 'icon-button'} onClick={() => toggleWishlist(product.id)}><Heart /></button>
-          <Link className="soft-button" to={`/products/${product.slug}`}>التفاصيل</Link>
           <button disabled={!product.stock} onClick={() => addToCart({ type: 'product', productId: product.id })}>
+            <ShoppingBag size={17} />
             {product.stock ? 'أضف للسلة' : 'غير متوفر'}
           </button>
+          <button aria-label={isFavorite ? 'إزالة من المفضلة' : 'أضف إلى المفضلة'} className={isFavorite ? 'icon-button active' : 'icon-button'} onClick={() => toggleWishlist(product.id)}><Heart /></button>
           {product.canBeAddedToCustomSet ? <button className="ghost" onClick={() => addToCustomSet(product.id)}>أضف للطقم</button> : null}
+          <Link className="soft-button" to={`/products/${product.slug}`}>التفاصيل</Link>
         </div>
       </div>
     </article>

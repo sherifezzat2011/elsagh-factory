@@ -437,9 +437,16 @@ button,
   background: var(--cream);
 }
 
+.product-image-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .product-image img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
   transition: transform 0.35s ease;
 }
 
@@ -461,6 +468,63 @@ button,
   color: var(--gold-light);
   padding: 4px 9px;
   font-size: 0.8rem;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-body h3 {
+  margin-top: 6px;
+}
+
+.product-body .price {
+  margin-top: auto;
+}
+
+.product-quick-actions {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 8px;
+}
+
+.product-quick-actions button {
+  min-height: 42px;
+  border-radius: 999px;
+  box-shadow: 0 14px 30px rgba(3, 31, 26, 0.22);
+}
+
+.product-quick-actions .quick-fav {
+  width: 44px;
+  padding: 0;
+  color: var(--primary-dark);
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(200, 162, 74, 0.46);
+}
+
+.product-quick-actions .quick-fav.active {
+  color: var(--error);
+  border-color: rgba(176, 56, 56, 0.48);
+}
+
+.product-quick-actions .quick-cart {
+  padding: 9px 12px;
+  color: white;
+  background: rgba(6, 62, 51, 0.94);
+  border-color: var(--gold);
+  font-size: 0.9rem;
 }
 
 .meta,
@@ -506,8 +570,17 @@ button,
   flex: 1 1 auto;
 }
 
+.card-actions {
+  align-items: stretch;
+}
+
+.card-actions > button:first-child {
+  flex: 2 1 150px;
+}
+
 .card-actions .icon-button {
   flex: 0 0 42px;
+  padding: 0;
   color: var(--primary-dark);
 }
 
@@ -3889,6 +3962,32 @@ button,
 
   .product-image {
     height: 210px;
+  }
+
+  .product-quick-actions {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .product-quick-actions button {
+    min-height: 40px;
+  }
+
+  .product-quick-actions .quick-cart {
+    padding-inline: 10px;
+    font-size: 0.82rem;
+  }
+
+  .card-actions {
+    display: grid;
+    grid-template-columns: 1fr 44px;
+  }
+
+  .card-actions .ghost,
+  .card-actions .soft-button {
+    grid-column: span 2;
   }
 
   .gallery img {
