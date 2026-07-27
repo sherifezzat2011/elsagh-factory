@@ -627,7 +627,7 @@ button,
 
 .product-image {
   position: relative;
-  height: 220px;
+  height: clamp(250px, 22vw, 310px);
   overflow: hidden;
   background: var(--cream);
 }
@@ -674,14 +674,28 @@ button,
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 148px;
+  gap: 14px;
+  text-align: center;
 }
 
 .product-body h3 {
-  margin-top: 6px;
+  width: 100%;
+  margin: 0;
+  color: var(--primary-deep);
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  line-height: 1.45;
+}
+
+.product-body h3 a {
+  color: inherit;
 }
 
 .product-body .price {
-  margin-top: auto;
+  justify-content: center;
+  margin: 0;
 }
 
 .product-quick-actions {
@@ -4754,7 +4768,17 @@ button,
   }
 
   .product-image {
-    height: 210px;
+    height: 250px;
+  }
+
+  .product-body {
+    min-height: 126px;
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .product-body h3 {
+    font-size: 1rem;
   }
 
   .product-quick-actions {
