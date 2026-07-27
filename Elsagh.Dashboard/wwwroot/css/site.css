@@ -2156,6 +2156,352 @@ body {
   transform: none;
 }
 
+.reports-page {
+  color: #111827;
+}
+
+.reports-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 18px;
+  align-items: stretch;
+  margin-bottom: 18px;
+  padding: 24px;
+  overflow: hidden;
+  color: white;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(212, 175, 55, 0.2), transparent 18rem),
+    linear-gradient(135deg, #071713 0%, #0b2521 58%, #071713 100%);
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  border-radius: 8px;
+  box-shadow: 0 22px 46px rgba(7, 23, 19, 0.14);
+}
+
+.reports-hero span {
+  display: inline-flex;
+  color: #f5d66a;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.reports-hero h1 {
+  margin: 8px 0 8px;
+  font-size: 1.65rem;
+  line-height: 1.35;
+}
+
+.reports-hero p {
+  max-width: 780px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.74);
+  line-height: 1.85;
+}
+
+.report-period-card {
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+}
+
+.report-period-card small,
+.report-period-card span {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.report-period-card strong {
+  color: #fff;
+  font-size: 1.15rem;
+}
+
+.report-command-bar {
+  justify-content: flex-start;
+}
+
+.report-kpi-grid article {
+  min-height: 116px;
+}
+
+.report-analytics-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(260px, 0.75fr) minmax(260px, 0.75fr);
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.report-analytics-grid-secondary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.report-panel {
+  min-width: 0;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid #eee8df;
+  border-radius: 8px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.055);
+}
+
+.report-panel-large {
+  min-height: 330px;
+}
+
+.report-panel-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.report-panel-title h2 {
+  margin: 0;
+  color: #071713;
+  font-size: 1.05rem;
+}
+
+.report-panel-title span {
+  display: block;
+  margin-top: 4px;
+  color: #667085;
+  font-size: 0.78rem;
+}
+
+.report-panel-title > strong {
+  color: #15803d;
+  font-size: 1rem;
+}
+
+.report-line-chart svg {
+  width: 100%;
+  height: 230px;
+}
+
+.report-line-chart .grid {
+  fill: none;
+  stroke: #eef2f7;
+  stroke-width: 1;
+}
+
+.report-line-chart .area {
+  fill: url(#salesArea);
+}
+
+.report-line-chart .line {
+  fill: none;
+  stroke: #d4af37;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.report-line-chart .dots circle {
+  fill: #fff;
+  stroke: #d4af37;
+  stroke-width: 4;
+}
+
+.chart-label-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  color: #667085;
+  font-size: 0.72rem;
+}
+
+.donut-report {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: 18px;
+  align-items: center;
+}
+
+.donut-visual {
+  width: 132px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #fff 0 41%, transparent 42%),
+    conic-gradient(#d4af37 0 58%, #071713 58% 83%, #e8d7b5 83% 100%);
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.18), 0 14px 26px rgba(15, 23, 42, 0.08);
+}
+
+.donut-legend,
+.stacked-bars,
+.report-metric-list,
+.top-products-list,
+.report-alert-list {
+  display: grid;
+  gap: 10px;
+}
+
+.donut-legend span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #475467;
+  font-size: 0.82rem;
+}
+
+.donut-legend b {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #d4af37;
+}
+
+.donut-legend span:nth-child(2) b { background: #071713; }
+.donut-legend span:nth-child(3) b { background: #e8d7b5; }
+
+.stacked-bars div {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 74px;
+  gap: 10px;
+  align-items: center;
+  color: #475467;
+  font-size: 0.8rem;
+}
+
+.stacked-bars b {
+  height: 10px;
+  min-width: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #d4af37, #b97917);
+}
+
+.stacked-bars strong {
+  color: #071713;
+  text-align: left;
+}
+
+.report-metric-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid #f1ede7;
+}
+
+.report-metric-list div:last-child {
+  border-bottom: 0;
+}
+
+.report-metric-list span {
+  color: #667085;
+}
+
+.report-metric-list strong {
+  color: #071713;
+}
+
+.top-products-list div {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 9px;
+  background: #fffdf8;
+  border: 1px solid #f0e6d7;
+  border-radius: 8px;
+}
+
+.top-products-list img {
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
+  border-radius: 7px;
+}
+
+.top-products-list span,
+.top-products-list small {
+  display: block;
+}
+
+.top-products-list span {
+  color: #071713;
+  font-weight: 800;
+}
+
+.top-products-list small {
+  color: #667085;
+  font-size: 0.72rem;
+}
+
+.top-products-list strong {
+  color: #b97917;
+  font-size: 0.84rem;
+}
+
+.report-alert-list div {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #eee8df;
+}
+
+.report-alert-list strong,
+.report-alert-list span {
+  display: block;
+}
+
+.report-alert-list strong {
+  color: #071713;
+  margin-bottom: 4px;
+}
+
+.report-alert-list span {
+  color: #667085;
+  font-size: 0.78rem;
+}
+
+.report-alert-list .warning {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.report-alert-list .info {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.report-alert-list .success {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.report-table-card {
+  margin-bottom: 16px;
+}
+
+.report-table-card .table-title {
+  padding: 18px 18px 0;
+}
+
+.report-manufacturing-table,
+.report-employees-table {
+  min-width: 980px !important;
+}
+
+.achievement-cell {
+  display: grid;
+  gap: 6px;
+}
+
+.achievement-cell span {
+  color: #071713;
+  font-weight: 900;
+}
+
+.achievement-cell b {
+  width: 100%;
+  max-width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #d4af37, #15803d);
+}
+
 @media (max-width: 1280px) {
   .metric-grid,
   .summary-strip {

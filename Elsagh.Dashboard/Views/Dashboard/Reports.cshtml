@@ -1,53 +1,288 @@
 @model DashboardViewModel
 @{
     ViewData["Title"] = "التقارير";
+
+    var salesByChannel = Model.Orders
+        .GroupBy(order => order.Channel)
+        .Select(group => new { Channel = group.Key, Total = group.Sum(order => order.Total), Count = group.Count() })
+        .OrderByDescending(item => item.Total)
+        .ToList();
+    var topProducts = Model.Products.OrderByDescending(product => product.RetailPrice * Math.Max(product.Stock, 1)).Take(5).ToList();
+    var totalRaw = Model.RawGoldLots.Sum(lot => lot.Weight);
+    var availableRaw = Model.RawGoldLots.Sum(lot => lot.AvailableWeight);
+    var reservedRaw = Model.RawGoldLots.Sum(lot => lot.ReservedWeight);
+    var transferredRaw = Model.RawGoldLots.Sum(lot => lot.TransferredWeight);
+    var actualWaste = Model.ManufacturingOrders.Sum(order => order.ActualWaste);
+    var expectedWaste = Model.ManufacturingOrders.Sum(order => order.ExpectedWaste);
+    var netProfit = Model.Revenue - Model.Products.Sum(product => product.ManufacturingCost) - actualWaste * 31;
+    var profitMargin = Model.Revenue == 0 ? 0 : Math.Round(netProfit / Model.Revenue * 100, 1);
+    var taxCollected = Model.Tax;
+    var employeeRows = Model.Employees.Select(employee => new
+    {
+        employee.Name,
+        employee.Role,
+        employee.Branch,
+        Target = employee.MonthlyTarget,
+        Sales = employee.CurrentSales,
+        Achievement = employee.MonthlyTarget == 0 ? 0 : Math.Round(employee.CurrentSales / employee.MonthlyTarget * 100, 0),
+        employee.ProducedWeight,
+        employee.WastePercentage
+    }).OrderByDescending(employee => employee.Achievement).ToList();
 }
 
-<section class="report-grid">
-    <article class="report-card"><span>مبيعات اليوم</span><strong>@Model.TodaySales.ToString("N0") د.ب</strong></article>
-    <article class="report-card"><span>المبيعات الشهرية</span><strong>@Model.Revenue.ToString("N0") د.ب</strong></article>
-    <article class="report-card"><span>استهلاك الذهب</span><strong>@Model.ManufacturingOrders.Sum(order => order.RawGoldWeight).ToString("N0") جرام</strong></article>
-    <article class="report-card"><span>تقرير الهالك</span><strong>@Model.CurrentWastePercentage.ToString("N2")%</strong></article>
-</section>
-
-<section class="dashboard-grid">
-    <article class="chart-card">
-        <div class="section-title"><h2>تقرير الربح</h2><span>هامش تجريبي</span></div>
-        <div class="ring-meter" style="--pct: 64"><strong>64%</strong><span>هامش الربح الإجمالي</span></div>
-    </article>
-    <article class="chart-card">
-        <div class="section-title"><h2>تقرير المخزون</h2><span>خام مقابل جاهز</span></div>
-        <div class="bar-chart compact">
-            <div style="--value: 78"><span>خام</span><b></b><strong>@Model.RawGoldWeight.ToString("N0") جرام</strong></div>
-            <div style="--value: 42"><span>جاهز</span><b></b><strong>@Model.FinishedProductsWeight.ToString("N0") جرام</strong></div>
+<section class="products-page products-page-compact reports-page">
+    <main class="products-main">
+        <div class="reports-hero">
+            <div>
+                <span>لوحة تقارير تنفيذية</span>
+                <h1>تقارير مصنع الصايغ للمجوهرات</h1>
+                <p>ملخص مالي وتشغيلي يغطي المبيعات، المخزون، الذهب الخام، التصنيع، الهالك، أداء الموظفين، والضريبة الثابتة 10%.</p>
+            </div>
+            <div class="report-period-card">
+                <small>الفترة الحالية</small>
+                <strong>يوليو 2026</strong>
+                <span>آخر تحديث: اليوم 05:50 م</span>
+            </div>
         </div>
-    </article>
-    <article class="chart-card wide">
-        <div class="section-title"><h2>أفضل المنتجات</h2><span>حسب قيمة البيع وإمكانات المخزون</span></div>
-        @foreach (var product in Model.Products.OrderByDescending(item => item.RetailPrice).Take(4))
-        {
-            <div class="mini-progress"><span>@product.Name</span><b style="width:@Math.Min(100, product.RetailPrice / 35)%"></b><strong>@product.RetailPrice.ToString("N0") د.ب</strong></div>
-        }
-    </article>
-</section>
 
-<section class="table-card">
-    <div class="section-title"><h2>تقرير التصنيع</h2><span>الهالك المتوقع مقابل الهالك الفعلي</span></div>
-    <table>
-        <thead><tr><th>الأمر</th><th>النوع</th><th>الخام</th><th>الهالك المتوقع</th><th>الهالك الفعلي</th><th>الفرق</th><th>الموظف</th></tr></thead>
-        <tbody>
-        @foreach (var order in Model.ManufacturingOrders)
-        {
-            <tr>
-                <td>@order.OrderNumber</td>
-                <td>@order.ManufacturingType</td>
-                <td>@order.RawGoldWeight.ToString("N0") جرام</td>
-                <td>@order.ExpectedWaste.ToString("N3") جرام</td>
-                <td>@order.ActualWaste.ToString("N3") جرام</td>
-                <td class="@(order.IsWasteExceeded ? "danger" : "success")">@order.WasteDifference.ToString("N3") جرام</td>
-                <td>@order.Employee</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+        <div class="products-actions product-command-bar report-command-bar">
+            <button type="button">تصدير PDF</button>
+            <button type="button">تصدير Excel</button>
+            <button type="button">طباعة التقرير</button>
+            <button type="button">مقارنة شهرية</button>
+            <button type="button" class="gold-action">إرسال للمدير</button>
+        </div>
+
+        <section class="product-kpi-grid report-kpi-grid">
+            <article>
+                <span class="kpi-icon">↗</span>
+                <small>إجمالي الإيراد</small>
+                <strong>@Model.Revenue.ToString("N0") د.ب</strong>
+                <em>شامل ضريبة 10%</em>
+            </article>
+            <article>
+                <span class="kpi-icon">◎</span>
+                <small>صافي ربح تقديري</small>
+                <strong>@netProfit.ToString("N0") د.ب</strong>
+                <em>هامش @profitMargin%</em>
+            </article>
+            <article>
+                <span class="kpi-icon">⚖</span>
+                <small>الذهب المتاح</small>
+                <strong>@availableRaw.ToString("N0") جرام</strong>
+                <em>من @totalRaw.ToString("N0") جرام خام</em>
+            </article>
+            <article>
+                <span class="kpi-icon">%</span>
+                <small>الضريبة المحصلة</small>
+                <strong>@taxCollected.ToString("N0") د.ب</strong>
+                <em>نسبة ثابتة 10%</em>
+            </article>
+        </section>
+
+        <section class="report-analytics-grid">
+            <article class="report-panel report-panel-large">
+                <div class="report-panel-title">
+                    <div>
+                        <h2>منحنى المبيعات الأسبوعي</h2>
+                        <span>قراءة سريعة لاتجاه الطلب على الفروع والقنوات</span>
+                    </div>
+                    <strong>+15.3%</strong>
+                </div>
+                <div class="report-line-chart" aria-label="منحنى المبيعات">
+                    <svg viewBox="0 0 760 230" role="img">
+                        <defs>
+                            <linearGradient id="salesArea" x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stop-color="#d4af37" stop-opacity="0.34" />
+                                <stop offset="100%" stop-color="#d4af37" stop-opacity="0" />
+                            </linearGradient>
+                        </defs>
+                        <path class="grid" d="M30 45H730M30 95H730M30 145H730M30 195H730" />
+                        <path class="area" d="M30 170 C120 145 145 118 235 126 C315 133 345 84 430 92 C505 99 535 58 610 70 C675 80 695 45 730 52 L730 205 L30 205 Z" />
+                        <path class="line" d="M30 170 C120 145 145 118 235 126 C315 133 345 84 430 92 C505 99 535 58 610 70 C675 80 695 45 730 52" />
+                        <g class="dots">
+                            <circle cx="30" cy="170" r="5" />
+                            <circle cx="235" cy="126" r="5" />
+                            <circle cx="430" cy="92" r="5" />
+                            <circle cx="610" cy="70" r="5" />
+                            <circle cx="730" cy="52" r="5" />
+                        </g>
+                    </svg>
+                    <div class="chart-label-row">
+                        <span>20 يوليو</span><span>21 يوليو</span><span>22 يوليو</span><span>23 يوليو</span><span>24 يوليو</span><span>25 يوليو</span><span>26 يوليو</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="report-panel">
+                <div class="report-panel-title">
+                    <div>
+                        <h2>توزيع القنوات</h2>
+                        <span>حسب قيمة الفواتير</span>
+                    </div>
+                </div>
+                <div class="donut-report">
+                    <div class="donut-visual"></div>
+                    <div class="donut-legend">
+                        @foreach (var item in salesByChannel)
+                        {
+                            var pct = Model.Revenue == 0 ? 0 : Math.Round(item.Total / Model.Revenue * 100, 0);
+                            <span><b></b>@item.Channel <strong>@pct%</strong></span>
+                        }
+                    </div>
+                </div>
+            </article>
+
+            <article class="report-panel">
+                <div class="report-panel-title">
+                    <div>
+                        <h2>حالة الذهب الخام</h2>
+                        <span>متاح، محجوز، ومحول للتصنيع</span>
+                    </div>
+                </div>
+                <div class="stacked-bars">
+                    <div><span>متاح</span><b style="width:@Math.Min(100, availableRaw / totalRaw * 100)%"></b><strong>@availableRaw.ToString("N0") جم</strong></div>
+                    <div><span>محجوز</span><b style="width:@Math.Min(100, reservedRaw / totalRaw * 100)%"></b><strong>@reservedRaw.ToString("N0") جم</strong></div>
+                    <div><span>محول</span><b style="width:@Math.Min(100, transferredRaw / totalRaw * 100)%"></b><strong>@transferredRaw.ToString("N0") جم</strong></div>
+                </div>
+            </article>
+        </section>
+
+        <section class="report-analytics-grid report-analytics-grid-secondary">
+            <article class="report-panel">
+                <div class="report-panel-title">
+                    <div>
+                        <h2>ملخص الربحية</h2>
+                        <span>قراءة تقديرية للديمو</span>
+                    </div>
+                    <strong>@profitMargin%</strong>
+                </div>
+                <div class="report-metric-list">
+                    <div><span>الإيراد</span><strong>@Model.Revenue.ToString("N0") د.ب</strong></div>
+                    <div><span>الضريبة</span><strong>@taxCollected.ToString("N0") د.ب</strong></div>
+                    <div><span>تكلفة الهالك</span><strong>@((actualWaste * 31).ToString("N0")) د.ب</strong></div>
+                    <div><span>صافي تقديري</span><strong>@netProfit.ToString("N0") د.ب</strong></div>
+                </div>
+            </article>
+
+            <article class="report-panel">
+                <div class="report-panel-title">
+                    <div>
+                        <h2>أفضل المنتجات</h2>
+                        <span>حسب القيمة المتاحة بالمخزون</span>
+                    </div>
+                </div>
+                <div class="top-products-list">
+                    @foreach (var product in topProducts)
+                    {
+                        <div>
+                            <img src="@product.ImageUrl" alt="@product.ArabicName" />
+                            <span>@product.ArabicName<small>@product.Stock قطعة · @product.Purity</small></span>
+                            <strong>@(product.RetailPrice * Math.Max(product.Stock, 1)) د.ب</strong>
+                        </div>
+                    }
+                </div>
+            </article>
+
+            <article class="report-panel">
+                <div class="report-panel-title">
+                    <div>
+                        <h2>تنبيهات تشغيلية</h2>
+                        <span>قرارات مهمة قبل إرسال التقرير</span>
+                    </div>
+                </div>
+                <div class="report-alert-list">
+                    <div class="warning"><strong>هالك أعلى من المتوقع</strong><span>أمر MO-2026-0003 يحتاج اعتماد المدير.</span></div>
+                    <div class="info"><strong>مخزون منخفض</strong><span>@Model.LowStockCount منتجات وصلت لحد إعادة الطلب.</span></div>
+                    <div class="success"><strong>تحصيل جيد</strong><span>العملاء النقديون بدون أرصدة متأخرة.</span></div>
+                </div>
+            </article>
+        </section>
+
+        <section class="products-card report-table-card">
+            <div class="report-panel-title table-title">
+                <div>
+                    <h2>تقرير التصنيع والهالك</h2>
+                    <span>المتوقع مقابل الفعلي مع الموظف المسؤول</span>
+                </div>
+                <strong>فرق إجمالي @((actualWaste - expectedWaste).ToString("N3")) جم</strong>
+            </div>
+            <div class="products-table-wrap">
+                <table class="products-table compact-product-table report-manufacturing-table">
+                    <thead>
+                        <tr>
+                            <th>الأمر</th>
+                            <th>النوع</th>
+                            <th>الخام</th>
+                            <th>المتوقع</th>
+                            <th>الفعلي</th>
+                            <th>الفرق</th>
+                            <th>الموظف</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var order in Model.ManufacturingOrders)
+                    {
+                        <tr>
+                            <td class="serial">@order.OrderNumber</td>
+                            <td>@order.ManufacturingType</td>
+                            <td>@order.RawGoldWeight.ToString("N0") جم</td>
+                            <td>@order.ExpectedWaste.ToString("N3") جم</td>
+                            <td>@order.ActualWaste.ToString("N3") جم</td>
+                            <td class="@(order.IsWasteExceeded ? "danger" : "success")">@order.WasteDifference.ToString("N3") جم</td>
+                            <td>@order.Employee</td>
+                            <td><span class="product-status @(order.IsWasteExceeded ? "reserved" : "active")">@(order.IsWasteExceeded ? "مراجعة" : "مقبول")</span></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="products-card report-table-card">
+            <div class="report-panel-title table-title">
+                <div>
+                    <h2>أداء الموظفين</h2>
+                    <span>المبيعات، الإنتاج، ونسبة تحقيق المستهدف</span>
+                </div>
+            </div>
+            <div class="products-table-wrap">
+                <table class="products-table compact-product-table report-employees-table">
+                    <thead>
+                        <tr>
+                            <th>الموظف</th>
+                            <th>الدور</th>
+                            <th>الفرع</th>
+                            <th>المستهدف</th>
+                            <th>المنجز</th>
+                            <th>التحقيق</th>
+                            <th>الإنتاج</th>
+                            <th>الهالك</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var employee in employeeRows)
+                    {
+                        <tr>
+                            <td><strong>@employee.Name</strong></td>
+                            <td>@employee.Role</td>
+                            <td>@employee.Branch</td>
+                            <td>@employee.Target.ToString("N0") د.ب</td>
+                            <td>@employee.Sales.ToString("N0") د.ب</td>
+                            <td>
+                                <div class="achievement-cell">
+                                    <span>@employee.Achievement%</span>
+                                    <b style="width:@Math.Min(100, employee.Achievement)%"></b>
+                                </div>
+                            </td>
+                            <td>@employee.ProducedWeight.ToString("N1") جم</td>
+                            <td>@employee.WastePercentage.ToString("N2")%</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 </section>
