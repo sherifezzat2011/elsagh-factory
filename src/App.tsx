@@ -373,15 +373,14 @@ function ProductGrid({ items }: { items: Product[] }) {
 }
 
 function BrandFilmHero() {
-  const filmImages = [
-    jewelrySets[0]?.image,
-    products.find((product) => product.pieceType === 'earrings')?.images[0],
-    products.find((product) => product.pieceType === 'ring')?.images[0],
-    jewelrySets[3]?.image,
-  ].filter(Boolean) as string[]
+  const filmImages = Array.from(new Set([
+    ...jewelrySets.slice(0, 6).map((set) => set.image),
+    ...products.filter((product) => product.canBeAddedToCustomSet).slice(0, 8).map((product) => product.images[0]),
+  ].filter(Boolean) as string[])).slice(0, 10)
+  const filmTiming = { '--frame-count': filmImages.length } as CSSProperties
 
   return (
-    <section className="brand-film-hero" aria-label="فيلم مصنع الصايغ">
+    <section className="brand-film-hero" aria-label="فيلم مصنع الصايغ" style={filmTiming}>
       <div className="brand-film-stage" aria-hidden="true">
         {filmImages.map((image, index) => (
           <figure key={image} className="brand-film-frame" style={{ '--frame-index': index } as CSSProperties}>
@@ -394,11 +393,22 @@ function BrandFilmHero() {
         <span>مصنع الصايغ للمجوهرات · Since 1783</span>
         <h1>ذهب بحريني يحمل الحكاية قبل اللمعة</h1>
         <p>لقطات سريعة من أطقمنا وقطعنا التراثية، مصاغة بروح السيوف والخناجر والحرفة البحرينية الأصيلة.</p>
+        <div className="brand-film-proof" aria-label="نماذج من المنتجات">
+          <span>مزناط</span>
+          <span>تراكي</span>
+          <span>خواتم</span>
+          <span>أطقم</span>
+        </div>
         <div className="hero-actions">
           <Link to="/products">تسوق المجموعة</Link>
           <Link to="/factory" className="secondary">حكاية المصنع</Link>
           <Link to="/build-your-set" className="secondary">صمّم طقمك</Link>
         </div>
+      </div>
+      <div className="brand-film-strip" aria-hidden="true">
+        {filmImages.slice(0, 8).map((image, index) => (
+          <img key={`${image}-strip-${index}`} src={image} alt="" />
+        ))}
       </div>
       <div className="brand-film-meta" aria-label="ملخص سريع">
         <span><Gem /> ذهب عيار 21</span>
