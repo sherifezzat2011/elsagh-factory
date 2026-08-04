@@ -354,13 +354,15 @@ const heroFilmImage = (image: string) => image
   .replace(/-\d+x\d+(?=\.(?:jpe?g|png|webp)$)/i, '')
   .replace(/w=\d+/i, 'w=1800')
 
+const hiddenHeroFilmImages = ['1000321217-1', '1000321180']
+
 function BrandFilmHero() {
   const filmImages = Array.from(new Set([
     ...jewelrySets.map((set) => set.image),
     ...categories.filter((category) => category.id !== 'rings' && category.id !== 'earrings').map((category) => category.image),
     ...collections.slice(0, 5).map((collection) => collection.image),
     ...branches.slice(0, 2).map((branch) => branch.image),
-  ].filter(Boolean).map(heroFilmImage) as string[])).slice(0, 10)
+  ].filter(Boolean).map(heroFilmImage).filter((image) => !hiddenHeroFilmImages.some((hidden) => image.includes(hidden))) as string[])).slice(0, 10)
   const filmTiming = {
     '--frame-count': filmImages.length,
     '--film-step': `${20 / Math.max(filmImages.length, 1)}s`,
