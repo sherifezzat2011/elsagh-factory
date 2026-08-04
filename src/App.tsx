@@ -350,14 +350,17 @@ function ProductGrid({ items }: { items: Product[] }) {
   return <div className="product-grid">{items.map((product) => <ProductCard key={product.id} product={product} />)}</div>
 }
 
+const heroFilmImage = (image: string) => image
+  .replace(/-\d+x\d+(?=\.(?:jpe?g|png|webp)$)/i, '')
+  .replace(/w=\d+/i, 'w=1800')
+
 function BrandFilmHero() {
   const filmImages = Array.from(new Set([
     ...jewelrySets.map((set) => set.image),
-    ...categories.map((category) => category.image),
-    ...collections.map((collection) => collection.image),
-    ...products.filter((product) => product.isFeatured || product.canBeAddedToCustomSet).flatMap((product) => product.images.slice(0, 2)),
-    ...branches.map((branch) => branch.image),
-  ].filter(Boolean) as string[])).slice(0, 12)
+    ...categories.filter((category) => category.id !== 'rings' && category.id !== 'earrings').map((category) => category.image),
+    ...collections.slice(0, 5).map((collection) => collection.image),
+    ...branches.slice(0, 2).map((branch) => branch.image),
+  ].filter(Boolean).map(heroFilmImage) as string[])).slice(0, 10)
   const filmTiming = {
     '--frame-count': filmImages.length,
     '--film-step': `${20 / Math.max(filmImages.length, 1)}s`,
