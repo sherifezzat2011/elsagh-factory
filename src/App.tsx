@@ -33,7 +33,6 @@ import {
   SlidersHorizontal,
   Sparkles,
   Star,
-  Swords,
   Trash2,
   Truck,
   UserRound,
@@ -353,13 +352,19 @@ function ProductGrid({ items }: { items: Product[] }) {
 
 function BrandFilmHero() {
   const filmImages = Array.from(new Set([
-    ...jewelrySets.slice(0, 6).map((set) => set.image),
-    ...products.filter((product) => product.canBeAddedToCustomSet).slice(0, 8).map((product) => product.images[0]),
-  ].filter(Boolean) as string[])).slice(0, 10)
-  const filmTiming = { '--frame-count': filmImages.length } as CSSProperties
+    ...jewelrySets.map((set) => set.image),
+    ...categories.map((category) => category.image),
+    ...collections.map((collection) => collection.image),
+    ...products.filter((product) => product.isFeatured || product.canBeAddedToCustomSet).flatMap((product) => product.images.slice(0, 2)),
+    ...branches.map((branch) => branch.image),
+  ].filter(Boolean) as string[])).slice(0, 12)
+  const filmTiming = {
+    '--frame-count': filmImages.length,
+    '--film-step': `${20 / Math.max(filmImages.length, 1)}s`,
+  } as CSSProperties
 
   return (
-    <section className="brand-film-hero" aria-label="فيلم مصنع الصايغ" style={filmTiming}>
+    <section className="brand-film-hero" aria-label="فيلم صور مصنع الصايغ" style={filmTiming}>
       <div className="brand-film-stage" aria-hidden="true">
         {filmImages.map((image, index) => (
           <figure key={image} className="brand-film-frame" style={{ '--frame-index': index } as CSSProperties}>
@@ -367,32 +372,6 @@ function BrandFilmHero() {
           </figure>
         ))}
         <div className="brand-film-grain" />
-      </div>
-      <div className="brand-film-content">
-        <span>مصنع الصايغ للمجوهرات · Since 1783</span>
-        <h1>ذهب بحريني يحمل الحكاية قبل اللمعة</h1>
-        <p>لقطات سريعة من أطقمنا وقطعنا التراثية، مصاغة بروح السيوف والخناجر والحرفة البحرينية الأصيلة.</p>
-        <div className="brand-film-proof" aria-label="نماذج من المنتجات">
-          <span>مزناط</span>
-          <span>تراكي</span>
-          <span>خواتم</span>
-          <span>أطقم</span>
-        </div>
-        <div className="hero-actions">
-          <Link to="/products">تسوق المجموعة</Link>
-          <Link to="/factory" className="secondary">حكاية المصنع</Link>
-          <Link to="/build-your-set" className="secondary">صمّم طقمك</Link>
-        </div>
-      </div>
-      <div className="brand-film-strip" aria-hidden="true">
-        {filmImages.slice(0, 8).map((image, index) => (
-          <img key={`${image}-strip-${index}`} src={image} alt="" />
-        ))}
-      </div>
-      <div className="brand-film-meta" aria-label="ملخص سريع">
-        <span><Gem /> ذهب عيار 21</span>
-        <span><Swords /> تراث بحريني</span>
-        <span><Sparkles /> أطقم مخصصة</span>
       </div>
     </section>
   )
